@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useMemo } from "react";
+import { forwardRef, useMemo, useEffect, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
   dark,
@@ -40,6 +40,21 @@ const syntaxThemes = {
 export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
   ({ snippet, className }, ref) => {
     const { code, language, title, author, theme, settings } = snippet;
+    const [isMobile, setIsMobile] = useState(false);
+    const [screenWidth, setScreenWidth] = useState(0);
+
+    // 响应式检测
+    useEffect(() => {
+      const checkScreenSize = () => {
+        const width = window.innerWidth;
+        setScreenWidth(width);
+        setIsMobile(width <= 768);
+      };
+
+      checkScreenSize();
+      window.addEventListener("resize", checkScreenSize);
+      return () => window.removeEventListener("resize", checkScreenSize);
+    }, []);
 
     // 获取语法高亮主题
     const syntaxTheme = useMemo(() => {
@@ -48,34 +63,153 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
       );
     }, [theme.syntaxTheme]);
 
+    // 响应式字体大小计算
+    const getResponsiveFontSize = () => {
+      if (screenWidth <= 480) return Math.max(settings.fontSize - 2, 10); // 超小屏
+      if (screenWidth <= 768) return Math.max(settings.fontSize - 1, 11); // 移动端
+      if (screenWidth <= 1024) return settings.fontSize; // 平板
+      return settings.fontSize; // 桌面端
+    };
+
+    // 响应式内边距计算
+    const getResponsivePadding = () => {
+      if (screenWidth <= 480) return Math.max(settings.padding - 8, 8);
+      if (screenWidth <= 768) return Math.max(settings.padding - 4, 12);
+      return settings.padding;
+    };
+
+    // 智能代码换行处理
+    const processCodeForMobile = (code: string): string => {
+      if (!isMobile) return code;
+
+      const maxLineLength = screenWidth <= 480 ? 30 : 40;
+      const lines = code.split("\n");
+      const processedLines: string[] = [];
+
+      lines.forEach((line) => {
+        if (line.length <= maxLineLength) {
+          processedLines.push(line);
+        } else {
+          // 保持缩进
+          const indent = line.match(/^\s*/)?.[0] || "";
+          const content = line.trim();
+
+          // 智能分割策略
+          if (
+            content.includes("(") ||
+            content.includes("{") ||
+            content.includes("[")
+          ) {
+            // 在括号处分割
+            const parts = content.split(/([({[])/);
+            let currentLine = indent;
+
+            for (let i = 0; i < parts.length; i++) {
+              const part = parts[i];
+              if ((currentLine + part).length <= maxLineLength) {
+                currentLine += part;
+              } else {
+                if (currentLine.trim()) {
+                  processedLines.push(currentLine);
+                  currentLine = indent + "  " + part; // 增加缩进
+                } else {
+                  currentLine += part;
+                }
+              }
+            }
+
+            if (currentLine.trim()) {
+              processedLines.push(currentLine);
+            }
+          } else {
+            // 按空格分割
+            const words = content.split(" ");
+            let currentLine = indent;
+
+            for (const word of words) {
+              const testLine =
+                currentLine + (currentLine === indent ? "" : " ") + word;
+              if (testLine.length <= maxLineLength) {
+                currentLine = testLine;
+              } else {
+                if (currentLine.trim()) {
+                  processedLines.push(currentLine);
+                  currentLine = indent + "  " + word;
+                } else {
+                  // 单词太长，强制分割
+                  processedLines.push(currentLine + word);
+                  currentLine = indent;
+                }
+              }
+            }
+
+            if (currentLine.trim()) {
+              processedLines.push(currentLine);
+            }
+          }
+        }
+      });
+
+      return processedLines.join("\n");
+    };
+
+    // 处理后的代码
+    const processedCode = useMemo(() => {
+      return processCodeForMobile(code);
+    }, [code, isMobile, screenWidth]);
+
     // 渲染代码内容
     const renderCodeContent = () => (
-      <div className="relative">
+      <div className="relative mobile-code-block">
         <SyntaxHighlighter
           language={language === "auto" ? "javascript" : language}
           style={syntaxTheme}
-          showLineNumbers={settings.lineNumbers}
+          showLineNumbers={isMobile ? false : settings.lineNumbers} // 移动端隐藏行号
           customStyle={{
             margin: 0,
-            padding: `${settings.padding}px`,
-            fontSize: `${settings.fontSize}px`,
+            padding: `${getResponsivePadding()}px`,
+            fontSize: `${getResponsiveFontSize()}px`,
             fontFamily: settings.fontFamily,
             borderRadius: settings.borderRadius,
             background: "transparent",
+            overflowX: isMobile ? "auto" : "visible", // 移动端允许横向滚动
+            maxWidth: "100%",
           }}
           codeTagProps={{
             style: {
               fontFamily: settings.fontFamily,
+              whiteSpace: isMobile ? "pre" : "pre-wrap", // 移动端保持原格式
+              wordBreak: isMobile ? "break-all" : "normal",
             },
           }}
+          wrapLines={!isMobile} // 桌面端换行，移动端不换行
+          wrapLongLines={!isMobile}
         >
-          {code}
+          {processedCode}
         </SyntaxHighlighter>
 
-        {/* 复制按钮 */}
-        <div className="absolute top-4 right-4">
-          <CopyButton text={code} />
+        {/* 复制按钮 - 响应式定位 */}
+        <div
+          className={cn(
+            "absolute z-10",
+            isMobile ? "top-2 right-2" : "top-4 right-4"
+          )}
+        >
+          <CopyButton
+            text={code}
+            className={cn(
+              "transition-all duration-200",
+              isMobile ? "scale-90" : "scale-100"
+            )}
+          />
         </div>
+
+        {/* 移动端滚动提示 */}
+        {isMobile && (
+          <div className="absolute bottom-2 right-2 text-xs text-white/40 pointer-events-none">
+            ← 滑动查看
+          </div>
+        )}
       </div>
     );
 
@@ -84,11 +218,32 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
       if (!settings.showHeader || (!title && !author)) return null;
 
       return (
-        <div className="px-6 py-4 border-b border-white/10">
-          {title && (
-            <h3 className="text-lg font-semibold text-white mb-1">{title}</h3>
+        <div
+          className={cn(
+            "border-b border-white/10",
+            isMobile ? "px-3 py-3" : "px-6 py-4"
           )}
-          {author && <p className="text-sm text-white/70">by {author}</p>}
+        >
+          {title && (
+            <h3
+              className={cn(
+                "font-semibold text-white mb-1 truncate",
+                isMobile ? "text-sm" : "text-lg"
+              )}
+            >
+              {title}
+            </h3>
+          )}
+          {author && (
+            <p
+              className={cn(
+                "text-white/70 truncate",
+                isMobile ? "text-xs" : "text-sm"
+              )}
+            >
+              by {author}
+            </p>
+          )}
         </div>
       );
     };
@@ -98,9 +253,14 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
       if (!settings.showFooter) return null;
 
       return (
-        <div className="px-6 py-3 border-t border-white/10 flex items-center justify-between text-sm text-white/70">
+        <div
+          className={cn(
+            "border-t border-white/10 flex items-center justify-between text-white/70",
+            isMobile ? "px-3 py-2 text-xs" : "px-6 py-3 text-sm"
+          )}
+        >
           <span>{language.toUpperCase()}</span>
-          <span>{code.split("\n").length} lines</span>
+          <span>{code.split("\n").length} 行</span>
         </div>
       );
     };
@@ -110,7 +270,14 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
       if (!settings.watermark) return null;
 
       return (
-        <div className="absolute bottom-4 right-4 text-xs text-white/30 font-mono">
+        <div
+          className={cn(
+            "absolute text-white/30 font-mono pointer-events-none",
+            isMobile
+              ? "bottom-2 right-2 text-[10px]"
+              : "bottom-4 right-4 text-xs"
+          )}
+        >
           magic-code-share
         </div>
       );
@@ -143,7 +310,12 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
 
         case "iphone":
           return (
-            <IPhone15Pro className="w-full max-w-sm mx-auto">
+            <IPhone15Pro
+              className={cn(
+                "mx-auto",
+                isMobile ? "w-full max-w-xs" : "w-full max-w-sm"
+              )}
+            >
               {content}
             </IPhone15Pro>
           );
@@ -156,14 +328,44 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
                 style={{ background: theme.background }}
               >
                 {/* macOS 窗口头部 */}
-                <div className="flex items-center px-4 py-3 bg-black/20">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                <div
+                  className={cn(
+                    "flex items-center bg-black/20",
+                    isMobile ? "px-3 py-2" : "px-4 py-3"
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "flex items-center",
+                      isMobile ? "space-x-1" : "space-x-2"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "rounded-full bg-red-500",
+                        isMobile ? "w-2 h-2" : "w-3 h-3"
+                      )}
+                    ></div>
+                    <div
+                      className={cn(
+                        "rounded-full bg-yellow-500",
+                        isMobile ? "w-2 h-2" : "w-3 h-3"
+                      )}
+                    ></div>
+                    <div
+                      className={cn(
+                        "rounded-full bg-green-500",
+                        isMobile ? "w-2 h-2" : "w-3 h-3"
+                      )}
+                    ></div>
                   </div>
                   <div className="flex-1 text-center">
-                    <span className="text-sm text-white/70 font-medium">
+                    <span
+                      className={cn(
+                        "text-white/70 font-medium truncate",
+                        isMobile ? "text-xs" : "text-sm"
+                      )}
+                    >
                       {title || ""}
                     </span>
                   </div>
@@ -182,22 +384,78 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
                 style={{ background: theme.background }}
               >
                 {/* Windows 窗口头部 */}
-                <div className="flex items-center justify-between px-4 py-2 bg-black/20">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 bg-white/20 rounded-sm"></div>
-                    <span className="text-sm text-white/70 font-medium">
+                <div
+                  className={cn(
+                    "flex items-center justify-between bg-black/20",
+                    isMobile ? "px-3 py-2" : "px-4 py-2"
+                  )}
+                >
+                  <div className="flex items-center space-x-2 flex-1 min-w-0">
+                    <div
+                      className={cn(
+                        "bg-white/20 rounded-sm flex-shrink-0",
+                        isMobile ? "w-3 h-3" : "w-4 h-4"
+                      )}
+                    ></div>
+                    <span
+                      className={cn(
+                        "text-white/70 font-medium truncate",
+                        isMobile ? "text-xs" : "text-sm"
+                      )}
+                    >
                       {title || ""}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <div className="w-6 h-6 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center">
-                      <span className="text-white/70 text-xs">−</span>
+                  <div
+                    className={cn(
+                      "flex items-center flex-shrink-0",
+                      isMobile ? "space-x-0.5" : "space-x-1"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "bg-white/10 hover:bg-white/20 rounded flex items-center justify-center",
+                        isMobile ? "w-5 h-5" : "w-6 h-6"
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "text-white/70",
+                          isMobile ? "text-[10px]" : "text-xs"
+                        )}
+                      >
+                        −
+                      </span>
                     </div>
-                    <div className="w-6 h-6 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center">
-                      <span className="text-white/70 text-xs">□</span>
+                    <div
+                      className={cn(
+                        "bg-white/10 hover:bg-white/20 rounded flex items-center justify-center",
+                        isMobile ? "w-5 h-5" : "w-6 h-6"
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "text-white/70",
+                          isMobile ? "text-[10px]" : "text-xs"
+                        )}
+                      >
+                        □
+                      </span>
                     </div>
-                    <div className="w-6 h-6 bg-red-500/80 hover:bg-red-500 rounded flex items-center justify-center">
-                      <span className="text-white text-xs">×</span>
+                    <div
+                      className={cn(
+                        "bg-red-500/80 hover:bg-red-500 rounded flex items-center justify-center",
+                        isMobile ? "w-5 h-5" : "w-6 h-6"
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "text-white",
+                          isMobile ? "text-[10px]" : "text-xs"
+                        )}
+                      >
+                        ×
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -223,10 +481,21 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
     return (
       <div
         ref={ref}
-        className={cn("w-full max-w-4xl mx-auto p-8", className)}
+        className={cn(
+          "w-full mx-auto",
+          isMobile ? "max-w-full p-2 sm:p-4" : "max-w-4xl p-8",
+          className
+        )}
         style={{ background: theme.background }}
       >
-        {renderWindowContainer()}
+        <div
+          className={cn(
+            "transition-all duration-300",
+            isMobile && "touch-pan-x" // 启用触摸滚动
+          )}
+        >
+          {renderWindowContainer()}
+        </div>
       </div>
     );
   }

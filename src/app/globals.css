@@ -1,4 +1,19 @@
 @import "tailwindcss";
+
+/* 移动端浏览器兼容性修复 */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari 特定修复 */
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
+@supports (-webkit-appearance: none) {
+  /* Chrome/Safari 特定修复 */
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+}
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -244,12 +259,43 @@
     background: hsl(var(--muted-foreground) / 0.6);
   }
 
+  /* 强制移动端样式加载 */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
   /* 移动端优化 */
-  @media (max-width: 640px) {
-    /* 防止移动端缩放 */
+  @media screen and (max-width: 640px) {
+    /* 防止移动端缩放和样式问题 */
     html {
       -webkit-text-size-adjust: 100%;
       -ms-text-size-adjust: 100%;
+      -moz-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      font-size: 16px;
+      height: 100%;
+    }
+
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      min-height: 100vh;
+      min-height: 100dvh;
+      font-size: 14px;
+    }
+
+    /* 确保CSS变量正常工作 */
+    :root {
+      font-size: 16px;
     }
 
     /* 优化触摸体验 */
@@ -258,23 +304,93 @@
     select,
     textarea {
       -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
       border-radius: 0.375rem;
+      touch-action: manipulation;
+      font-size: 16px;
+    }
+
+    /* 确保Tailwind类正常工作 */
+    * {
+      box-sizing: border-box;
     }
 
     /* 优化代码编辑器在移动端的显示 */
     textarea {
-      font-size: 12px !important;
-      line-height: 1.4;
+      font-size: 14px !important;
+      line-height: 1.4 !important;
+      resize: none !important;
+      min-height: 200px !important;
     }
 
     /* 优化选择框在移动端的显示 */
     select {
-      font-size: 14px;
+      font-size: 16px !important;
+      min-height: 2.5rem !important;
+      padding: 0.5rem !important;
     }
 
-    /* 防止移动端横向滚动 */
-    body {
-      overflow-x: hidden;
+    /* 移动端按钮优化 */
+    button {
+      min-height: 2.5rem !important;
+      font-size: 14px !important;
+      padding: 0.5rem 1rem !important;
+    }
+
+    /* 移动端输入框优化 */
+    input {
+      font-size: 16px !important;
+      min-height: 2.5rem !important;
+      padding: 0.5rem !important;
+    }
+
+    /* 确保响应式网格正常工作 */
+    .grid {
+      display: grid !important;
+    }
+
+    /* 确保flex布局正常工作 */
+    .flex {
+      display: flex !important;
+    }
+
+    /* 强制加载字体 */
+    * {
+      font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif !important;
+    }
+
+    code,
+    pre {
+      font-family: var(--font-geist-mono), "Courier New", monospace !important;
+    }
+  }
+
+  /* 全局移动端代码块样式 */
+  @media screen and (max-width: 640px) {
+    .mobile-code-block {
+      max-width: 100% !important;
+      width: 100% !important;
+      overflow-x: hidden !important;
+    }
+
+    .mobile-code-block pre {
+      max-width: 100% !important;
+      width: 100% !important;
+      font-size: 12px !important;
+      line-height: 1.4 !important;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+
+    .mobile-code-block code {
+      max-width: 100% !important;
+      width: 100% !important;
+      font-size: 12px !important;
+      line-height: 1.4 !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
     }
   }
 }
