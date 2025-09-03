@@ -12,6 +12,7 @@ import { BlurFade } from "@/components/magicui/blur-fade";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useResetDialog } from "@/components/ui/reset-dialog";
 import {
   CodeSnippet,
   CodeTheme,
@@ -20,10 +21,12 @@ import {
   DEFAULT_SETTINGS,
 } from "@/types";
 import { cn } from "@/lib/utils";
-import { Code2, Sparkles, Github, Twitter } from "lucide-react";
+import { Code2, Sparkles, Github, Twitter, RotateCcw } from "lucide-react";
+import { toast } from "sonner";
 
 export default function HomePage() {
   const previewRef = useRef<HTMLDivElement>(null);
+  const { showDialog, DialogComponent } = useResetDialog();
 
   // 代码片段状态
   const [snippet, setSnippet] = useState<CodeSnippet>({
@@ -47,7 +50,7 @@ console.log("Magic created:", magic);
 export default createMagic;`,
     language: "javascript",
     title: "Magic Code Share 示例",
-    author: "Magic UI",
+    author: "Coder",
     createdAt: new Date("2024-01-01T00:00:00.000Z"),
     theme: DEFAULT_THEME,
     settings: DEFAULT_SETTINGS,
@@ -82,6 +85,44 @@ export default createMagic;`,
   const handleSettingsChange = useCallback((settings: CodeSettings) => {
     setSnippet((prev) => ({ ...prev, settings }));
   }, []);
+
+  // 重置所有设置到默认状态
+  const handleReset = useCallback(() => {
+    showDialog({
+      title: "重置所有设置",
+      description:
+        "确定要重置所有设置到默认状态吗？这将清除当前的代码、主题和配置。",
+      onConfirm: () => {
+        setSnippet({
+          id: "default",
+          code: `// 欢迎使用 Magic Code Share
+// 一个美观的代码分享工具
+
+function createMagic() {
+  const elements = ["✨", "🎨", "🚀", "💫"];
+  
+  return elements.map((emoji, index) => ({
+    id: index,
+    symbol: emoji,
+    magic: true
+  }));
+}
+
+const magic = createMagic();
+console.log("Magic created:", magic);
+
+export default createMagic;`,
+          language: "javascript",
+          title: "Magic Code Share 示例",
+          author: "Coder",
+          createdAt: new Date("2024-01-01T00:00:00.000Z"),
+          theme: DEFAULT_THEME,
+          settings: DEFAULT_SETTINGS,
+        });
+        toast.success("已重置所有设置到默认状态");
+      },
+    });
+  }, [showDialog]);
 
   return (
     <div className="min-h-screen bg-background relative">
@@ -119,6 +160,15 @@ export default createMagic;`,
               </div>
 
               <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleReset}
+                  className="flex items-center gap-2"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                  重置
+                </Button>
                 <Button variant="ghost" size="icon" asChild>
                   <a
                     href="https://github.com"
@@ -234,6 +284,7 @@ export default createMagic;`,
           </div>
         </BlurFade>
       </main>
+      {DialogComponent}
     </div>
   );
 }
