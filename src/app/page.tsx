@@ -83,18 +83,6 @@ export default createMagic;`,
     setSnippet((prev) => ({ ...prev, settings }));
   }, []);
 
-  // 生成分享链接 (模拟)
-  const handleGenerateShareLink = useCallback(
-    async (code: string, title: string): Promise<string> => {
-      // 这里应该调用后端 API 生成真实的分享链接
-      // 现在返回一个模拟的链接
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // 模拟网络延迟
-      const id = Math.random().toString(36).substr(2, 9);
-      return `https://magic-code-share.com/s/${id}`;
-    },
-    []
-  );
-
   return (
     <div className="min-h-screen bg-background relative">
       {/* 背景网格 */}
@@ -168,8 +156,8 @@ export default createMagic;`,
                 <CodeEditor
                   code={snippet.code}
                   language={snippet.language}
-                  title={snippet.title}
-                  author={snippet.author}
+                  title={snippet.title || ""}
+                  author={snippet.author || ""}
                   onCodeChange={handleCodeChange}
                   onLanguageChange={handleLanguageChange}
                   onTitleChange={handleTitleChange}
@@ -192,7 +180,7 @@ export default createMagic;`,
                 previewRef={previewRef}
                 title={snippet.title}
                 code={snippet.code}
-                onGenerateShareLink={handleGenerateShareLink}
+                snippet={snippet}
               />
             </BlurFade>
           </div>

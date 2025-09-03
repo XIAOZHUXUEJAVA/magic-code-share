@@ -26,6 +26,8 @@ import {
   generateFilename,
   getOptimizedExportOptions,
 } from "@/lib/export-utils";
+import { encodeSnippetToUrl, copyToClipboard } from "@/lib/share-utils";
+import { CodeSnippet } from "@/types";
 import { ExportOptions } from "@/types";
 import {
   Download,
@@ -45,14 +47,14 @@ interface ExportControlsProps {
   previewRef: React.RefObject<HTMLDivElement | null>;
   title: string | undefined;
   code: string;
-  onGenerateShareLink?: (code: string, title: string) => Promise<string>;
+  snippet: CodeSnippet;
 }
 
 export function ExportControls({
   previewRef,
   title,
   code,
-  onGenerateShareLink,
+  snippet,
 }: ExportControlsProps) {
   const [isExporting, setIsExporting] = useState(false);
   const [exportFormat, setExportFormat] = useState<"png" | "jpg" | "pdf">(
@@ -129,14 +131,9 @@ export function ExportControls({
 
   // 生成分享链接
   const handleGenerateShareLink = async () => {
-    if (!onGenerateShareLink) {
-      toast.error("分享功能暂不可用");
-      return;
-    }
-
     setIsGeneratingLink(true);
     try {
-      const link = await onGenerateShareLink(code, title || "Untitled");
+      const link = encodeSnippetToUrl(snippet);
       setShareLink(link);
       toast.success("分享链接已生成");
     } catch (error) {
@@ -150,10 +147,14 @@ export function ExportControls({
   // 复制分享链接
   const handleCopyShareLink = async () => {
     try {
-      await navigator.clipboard.writeText(shareLink);
-      setLinkCopied(true);
-      setTimeout(() => setLinkCopied(false), 2000);
-      toast.success("链接已复制到剪贴板");
+      const success = await copyToClipboard(shareLink);
+      if (success) {
+        setLinkCopied(true);
+        setTimeout(() => setLinkCopied(false), 2000);
+        toast.success("链接已复制到剪贴板");
+      } else {
+        toast.error("复制链接失败");
+      }
     } catch (error) {
       toast.error("复制链接失败");
     }
@@ -315,7 +316,7 @@ export function ExportControls({
 
               <Button
                 onClick={handleGenerateShareLink}
-                disabled={isGeneratingLink || !onGenerateShareLink}
+                disabled={isGeneratingLink}
                 className="w-full"
               >
                 {isGeneratingLink ? (
@@ -355,15 +356,6 @@ export function ExportControls({
                   <div className="text-xs text-muted-foreground">
                     链接已生成，可以分享给其他人查看你的代码卡片。
                   </div>
-                </div>
-              )}
-
-              {!onGenerateShareLink && (
-                <div className="flex items-center gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-                  <AlertCircle className="h-4 w-4 text-yellow-600" />
-                  <span className="text-sm text-yellow-800">
-                    分享功能需要后端支持，当前为演示模式。
-                  </span>
                 </div>
               )}
             </div>
