@@ -82,7 +82,7 @@ export function decodeSnippetFromUrl(url: string): CodeSnippet | null {
       language: shareData.language,
       title: shareData.title || "分享的代码",
       author: shareData.author || "匿名用户",
-      createdAt: new Date(),
+      createdAt: new Date("2024-01-01T00:00:00.000Z"),
       theme: shareData.theme || DEFAULT_THEME,
       settings: shareData.settings || DEFAULT_SETTINGS,
     };
@@ -137,9 +137,15 @@ export function validateShareUrl(url: string): boolean {
 // 获取分享链接的统计信息（模拟）
 export function getShareStats(url: string): { views: number; createdAt: Date } {
   // 在实际应用中，这里可以从后端获取统计信息
+  // 使用URL哈希生成一致的模拟数据，避免水合错误
+  const hash = url.split("").reduce((a, b) => {
+    a = (a << 5) - a + b.charCodeAt(0);
+    return a & a;
+  }, 0);
+
   return {
-    views: Math.floor(Math.random() * 100) + 1,
-    createdAt: new Date(),
+    views: Math.abs(hash % 100) + 1,
+    createdAt: new Date("2024-01-01T00:00:00.000Z"),
   };
 }
 

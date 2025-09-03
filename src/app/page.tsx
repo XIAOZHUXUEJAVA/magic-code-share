@@ -48,7 +48,7 @@ export default createMagic;`,
     language: "javascript",
     title: "Magic Code Share 示例",
     author: "Magic UI",
-    createdAt: new Date(),
+    createdAt: new Date("2024-01-01T00:00:00.000Z"),
     theme: DEFAULT_THEME,
     settings: DEFAULT_SETTINGS,
   });

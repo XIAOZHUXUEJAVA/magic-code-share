@@ -256,10 +256,7 @@ export function ExportControls({
             <div className="space-y-2">
               <Label>自定义文件名 (可选)</Label>
               <Input
-                placeholder={generateFilename(
-                  title || "code-snippet",
-                  exportFormat
-                )}
+                placeholder={`${title || "code-snippet"}.${exportFormat}`}
                 value={customFilename}
                 onChange={(e) => setCustomFilename(e.target.value)}
               />

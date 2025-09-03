@@ -199,9 +199,9 @@ export function ThemeConfigurator({
               <Label>窗口样式</Label>
               <Select
                 value={theme.windowStyle}
-                onValueChange={(value: any) =>
-                  updateTheme({ windowStyle: value })
-                }
+                onValueChange={(
+                  value: "macos" | "windows" | "terminal" | "safari" | "iphone"
+                ) => updateTheme({ windowStyle: value })}
               >
                 <SelectTrigger>
                   <SelectValue />
