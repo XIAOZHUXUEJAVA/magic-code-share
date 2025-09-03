@@ -2,6 +2,55 @@ import * as htmlToImage from "html-to-image";
 import { jsPDF } from "jspdf";
 import { ExportOptions } from "@/types";
 
+// 辅助函数：计算元素的完整尺寸
+function getElementDimensions(element: HTMLElement, options: ExportOptions) {
+  const rect = element.getBoundingClientRect();
+  const computedStyle = window.getComputedStyle(element);
+
+  // 计算完整尺寸，包括padding和border
+  const fullWidth =
+    options.width ||
+    Math.ceil(
+      rect.width +
+        parseFloat(computedStyle.paddingLeft) +
+        parseFloat(computedStyle.paddingRight)
+    );
+  const fullHeight =
+    options.height ||
+    Math.ceil(
+      rect.height +
+        parseFloat(computedStyle.paddingTop) +
+        parseFloat(computedStyle.paddingBottom)
+    );
+
+  return { fullWidth, fullHeight };
+}
+
+// 辅助函数：获取通用的html-to-image配置
+function getBaseConfig(
+  element: HTMLElement,
+  options: ExportOptions,
+  backgroundColor?: string
+) {
+  const { fullWidth, fullHeight } = getElementDimensions(element, options);
+
+  return {
+    pixelRatio: options.scale,
+    width: fullWidth,
+    height: fullHeight,
+    ...(backgroundColor && { backgroundColor }),
+    style: {
+      transform: "scale(1)",
+      transformOrigin: "top left",
+      width: `${fullWidth}px`,
+      height: `${fullHeight}px`,
+    },
+    skipFonts: false,
+    includeQueryParams: true,
+    cacheBust: true,
+  };
+}
+
 // 导出为 PNG
 export async function exportToPNG(
   element: HTMLElement,
@@ -12,19 +61,8 @@ export async function exportToPNG(
   }
 ): Promise<string> {
   try {
-    const dataUrl = await htmlToImage.toPng(element, {
-      pixelRatio: options.scale,
-      width: options.width,
-      height: options.height,
-      style: {
-        transform: "scale(1)",
-        transformOrigin: "top left",
-      },
-      // 支持现代CSS特性
-      skipFonts: false,
-      includeQueryParams: true,
-    });
-
+    const config = getBaseConfig(element, options);
+    const dataUrl = await htmlToImage.toPng(element, config);
     return dataUrl;
   } catch (error) {
     console.error("Error exporting to PNG:", error);
@@ -42,20 +80,11 @@ export async function exportToJPG(
   }
 ): Promise<string> {
   try {
-    const dataUrl = await htmlToImage.toJpeg(element, {
-      pixelRatio: options.scale,
-      backgroundColor: "#ffffff",
-      width: options.width,
-      height: options.height,
+    const config = {
+      ...getBaseConfig(element, options, "#ffffff"),
       quality: options.quality,
-      style: {
-        transform: "scale(1)",
-        transformOrigin: "top left",
-      },
-      skipFonts: false,
-      includeQueryParams: true,
-    });
-
+    };
+    const dataUrl = await htmlToImage.toJpeg(element, config);
     return dataUrl;
   } catch (error) {
     console.error("Error exporting to JPG:", error);
@@ -74,18 +103,9 @@ export async function exportToPDF(
 ): Promise<string> {
   try {
     // 首先获取PNG数据
-    const pngDataUrl = await htmlToImage.toPng(element, {
-      pixelRatio: options.scale,
-      backgroundColor: "#ffffff",
-      width: options.width,
-      height: options.height,
-      style: {
-        transform: "scale(1)",
-        transformOrigin: "top left",
-      },
-      skipFonts: false,
-      includeQueryParams: true,
-    });
+    const config = getBaseConfig(element, options, "#ffffff");
+    const pngDataUrl = await htmlToImage.toPng(element, config);
+    const { fullWidth, fullHeight } = getElementDimensions(element, options);
 
     // 创建临时图片来获取尺寸
     const img = new Image();
@@ -95,12 +115,12 @@ export async function exportToPDF(
       img.onload = () => {
         try {
           const pdf = new jsPDF({
-            orientation: img.width > img.height ? "landscape" : "portrait",
+            orientation: fullWidth > fullHeight ? "landscape" : "portrait",
             unit: "px",
-            format: [img.width, img.height],
+            format: [fullWidth, fullHeight],
           });
 
-          pdf.addImage(pngDataUrl, "PNG", 0, 0, img.width, img.height);
+          pdf.addImage(pngDataUrl, "PNG", 0, 0, fullWidth, fullHeight);
           resolve(pdf.output("datauristring"));
         } catch (error) {
           reject(error);
@@ -134,17 +154,8 @@ export async function copyImageToClipboard(
 ): Promise<void> {
   try {
     // 直接使用html-to-image生成blob
-    const blob = await htmlToImage.toBlob(element, {
-      pixelRatio: options.scale,
-      width: options.width,
-      height: options.height,
-      style: {
-        transform: "scale(1)",
-        transformOrigin: "top left",
-      },
-      skipFonts: false,
-      includeQueryParams: true,
-    });
+    const config = getBaseConfig(element, options);
+    const blob = await htmlToImage.toBlob(element, config);
 
     if (!blob) {
       throw new Error("Failed to generate image blob");

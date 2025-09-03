@@ -164,7 +164,7 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
                   </div>
                   <div className="flex-1 text-center">
                     <span className="text-sm text-white/70 font-medium">
-                      {title || "Untitled"}
+                      {title || ""}
                     </span>
                   </div>
                 </div>
@@ -186,7 +186,7 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-white/20 rounded-sm"></div>
                     <span className="text-sm text-white/70 font-medium">
-                      {title || "Untitled"}
+                      {title || ""}
                     </span>
                   </div>
                   <div className="flex items-center space-x-1">

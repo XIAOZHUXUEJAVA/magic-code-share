@@ -187,7 +187,7 @@ export function ThemeConfigurator({
                   <SelectItem value="monokai">Monokai</SelectItem>
                   <SelectItem value="atom-dark">Atom Dark</SelectItem>
                   <SelectItem value="tomorrow">Tomorrow</SelectItem>
-                  <SelectItem value="terminal">Terminal</SelectItem>
+                  {/* <SelectItem value="terminal">Terminal</SelectItem> */}
                 </SelectContent>
               </Select>
             </div>

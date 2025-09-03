@@ -101,12 +101,12 @@ export const PRESET_THEMES: CodeTheme[] = [
     windowStyle: "macos",
     syntaxTheme: "monokai",
   },
-  {
-    name: "Terminal",
-    background: "linear-gradient(135deg, #000000 0%, #1a1a1a 100%)",
-    windowStyle: "terminal",
-    syntaxTheme: "terminal",
-  },
+  // {
+  //   name: "Terminal",
+  //   background: "linear-gradient(135deg, #000000 0%, #1a1a1a 100%)",
+  //   windowStyle: "terminal",
+  //   syntaxTheme: "terminal",
+  // },
 ];
 
 // 默认设置
