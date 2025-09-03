@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useResetDialog } from "@/components/ui/reset-dialog";
+import { useHelpDialog } from "@/components/ui/help-dialog";
 import {
   CodeSnippet,
   CodeTheme,
@@ -21,12 +22,21 @@ import {
   DEFAULT_SETTINGS,
 } from "@/types";
 import { cn } from "@/lib/utils";
-import { Code2, Sparkles, Github, Twitter, RotateCcw } from "lucide-react";
+import {
+  Code2,
+  Sparkles,
+  Github,
+  Twitter,
+  RotateCcw,
+  HelpCircle,
+} from "lucide-react";
 import { toast } from "sonner";
 
 export default function HomePage() {
   const previewRef = useRef<HTMLDivElement>(null);
   const { showDialog, DialogComponent } = useResetDialog();
+  const { showDialog: showHelpDialog, DialogComponent: HelpDialogComponent } =
+    useHelpDialog();
 
   // 代码片段状态
   const [snippet, setSnippet] = useState<CodeSnippet>({
@@ -169,6 +179,15 @@ export default createMagic;`,
                   <RotateCcw className="h-4 w-4" />
                   重置
                 </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={showHelpDialog}
+                  className="flex items-center gap-2"
+                >
+                  <HelpCircle className="h-4 w-4" />
+                  使用说明
+                </Button>
                 <Button variant="ghost" size="icon" asChild>
                   <a
                     href="https://github.com"
@@ -266,23 +285,24 @@ export default createMagic;`,
                 <span>Made with ❤️ using</span>
                 <div className="flex items-center gap-2">
                   <span>Next.js</span>
-                  <Separator orientation="vertical" className="h-4" />
+                  {/* <Separator orientation="vertical" className="h-4" />
                   <span>React</span>
                   <Separator orientation="vertical" className="h-4" />
                   <span>TypeScript</span>
                   <Separator orientation="vertical" className="h-4" />
-                  <span>Tailwind CSS</span>
+                  <span>Tailwind CSS</span> */}
                 </div>
               </div>
 
               <div className="text-xs text-muted-foreground">
-                © 2024 Magic Code Share. 开源项目，欢迎贡献代码。
+                © 2025 Magic Code Share. 开源项目，欢迎贡献代码。
               </div>
             </div>
           </div>
         </BlurFade>
       </main>
       {DialogComponent}
+      {HelpDialogComponent}
     </div>
   );
 }
