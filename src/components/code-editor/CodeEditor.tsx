@@ -265,8 +265,11 @@ hello();`,
           placeholder="在这里粘贴你的代码，或者拖拽文件到这里..."
           value={code}
           onChange={(e) => handleCodeChange(e.target.value)}
-          className="min-h-[400px] font-mono text-sm resize-none"
-          style={{ fontFamily: "Fira Code, Monaco, Consolas, monospace" }}
+          className="min-h-[400px] text-sm resize-none"
+          style={{
+            fontFamily:
+              "var(--font-geist-mono), Consolas, 'Fira Code', Monaco, 'Courier New', monospace",
+          }}
         />
 
         {isDragging && (

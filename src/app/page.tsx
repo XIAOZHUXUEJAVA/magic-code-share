@@ -285,12 +285,12 @@ export default createMagic;`,
                 <span>Made with ❤️ using</span>
                 <div className="flex items-center gap-2">
                   <span>Next.js</span>
-                  {/* <Separator orientation="vertical" className="h-4" />
+                  <Separator orientation="vertical" className="h-4" />
                   <span>React</span>
                   <Separator orientation="vertical" className="h-4" />
                   <span>TypeScript</span>
                   <Separator orientation="vertical" className="h-4" />
-                  <span>Tailwind CSS</span> */}
+                  <span>Tailwind CSS</span>
                 </div>
               </div>
 
