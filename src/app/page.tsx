@@ -272,8 +272,6 @@ export default createMagic;`,
                   <span>TypeScript</span>
                   <Separator orientation="vertical" className="h-4" />
                   <span>Tailwind CSS</span>
-                  <Separator orientation="vertical" className="h-4" />
-                  <span>Magic UI</span>
                 </div>
               </div>
 

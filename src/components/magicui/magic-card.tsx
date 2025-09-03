@@ -4,12 +4,12 @@ import { cn } from "@/lib/utils";
 import { motion, HTMLMotionProps } from "framer-motion";
 import React, { useCallback, useEffect, useState } from "react";
 
-interface MagicCardProps
-  extends Omit<HTMLMotionProps<"div">, "ref" | "children"> {
+interface MagicCardProps {
   gradientSize?: number;
   gradientColor?: string;
   gradientOpacity?: number;
   children?: React.ReactNode;
+  className?: string;
 }
 
 export const MagicCard = React.forwardRef<HTMLDivElement, MagicCardProps>(
@@ -24,7 +24,6 @@ export const MagicCard = React.forwardRef<HTMLDivElement, MagicCardProps>(
     },
     ref
   ) => {
-    const childrenNode = children as React.ReactNode;
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [isHovering, setIsHovering] = useState(false);
 
@@ -62,7 +61,7 @@ export const MagicCard = React.forwardRef<HTMLDivElement, MagicCardProps>(
             opacity: isHovering ? gradientOpacity : 0,
           }}
         />
-        <div className="relative z-10">{childrenNode}</div>
+        <div className="relative z-10">{children}</div>
       </motion.div>
     );
   }

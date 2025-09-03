@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { BorderBeam } from "@/components/magicui/border-beam";
 import {
   exportToPNG,
   exportToJPG,
@@ -158,7 +159,8 @@ export function ExportControls({
   };
 
   return (
-    <Card className="w-full">
+    <Card className="relative w-full">
+      <BorderBeam size={250} duration={8} delay={2} />
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Share2 className="h-5 w-5" />

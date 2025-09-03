@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { CodeTheme, CodeSettings, PRESET_THEMES } from "@/types";
 import { ColorPicker } from "./ColorPicker";
 import { useResetDialog } from "@/components/ui/reset-dialog";
+import { BorderBeam } from "@/components/magicui/border-beam";
 import { Palette, Monitor, Settings, Type } from "lucide-react";
 import { toast } from "sonner";
 
@@ -55,7 +56,8 @@ export function ThemeConfigurator({
 
   return (
     <>
-      <Card className="w-full">
+      <Card className="relative w-full">
+        <BorderBeam size={250} duration={8} delay={2} />
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Palette className="h-5 w-5" />
