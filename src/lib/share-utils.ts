@@ -129,7 +129,7 @@ export function validateShareUrl(url: string): boolean {
   try {
     const snippet = decodeSnippetFromUrl(url);
     return snippet !== null;
-  } catch (error) {
+  } catch {
     return false;
   }
 }

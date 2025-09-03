@@ -10,7 +10,7 @@ import {
   atomDark,
   tomorrow,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { CodeSnippet, CodeTheme, CodeSettings } from "@/types";
+import { CodeSnippet } from "@/types";
 import { Safari } from "@/components/magicui/safari";
 import { Terminal } from "@/components/magicui/terminal";
 import IPhone15Pro from "@/components/magicui/iphone-15-pro";

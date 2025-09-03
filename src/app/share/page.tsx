@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { CodePreview } from "@/components/code-preview/CodePreview";
 import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text";
@@ -8,7 +8,7 @@ import { BorderBeam } from "@/components/magicui/border-beam";
 import { GridPattern } from "@/components/magicui/grid-pattern";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CodeSnippet } from "@/types";
@@ -29,7 +29,7 @@ import {
 import Link from "next/link";
 import { toast } from "sonner";
 
-export default function SharePage() {
+function SharePageContent() {
   const searchParams = useSearchParams();
   const [snippet, setSnippet] = useState<CodeSnippet | null>(null);
   const [loading, setLoading] = useState(true);
@@ -72,7 +72,7 @@ export default function SharePage() {
     try {
       await navigator.clipboard.writeText(window.location.href);
       toast.success("分享链接已复制到剪贴板");
-    } catch (error) {
+    } catch {
       toast.error("复制链接失败");
     }
   };
@@ -281,5 +281,22 @@ export default function SharePage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function SharePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">加载分享内容中...</p>
+          </div>
+        </div>
+      }
+    >
+      <SharePageContent />
+    </Suspense>
   );
 }

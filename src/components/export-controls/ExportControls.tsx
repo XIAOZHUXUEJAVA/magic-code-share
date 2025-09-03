@@ -13,8 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
+
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -28,7 +27,7 @@ import {
 } from "@/lib/export-utils";
 import { encodeSnippetToUrl, copyToClipboard } from "@/lib/share-utils";
 import { CodeSnippet } from "@/types";
-import { ExportOptions } from "@/types";
+
 import {
   Download,
   Share2,
@@ -39,7 +38,6 @@ import {
   Link,
   Loader2,
   Check,
-  AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -155,7 +153,7 @@ export function ExportControls({
       } else {
         toast.error("复制链接失败");
       }
-    } catch (error) {
+    } catch {
       toast.error("复制链接失败");
     }
   };

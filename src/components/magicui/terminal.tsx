@@ -55,7 +55,13 @@ export const AnimatedSpan = ({
     if (sequence.activeIndex === itemIndex) {
       setHasStarted(true);
     }
-  }, [sequence?.activeIndex, sequence?.sequenceStarted, hasStarted, itemIndex]);
+  }, [
+    sequence,
+    sequence?.activeIndex,
+    sequence?.sequenceStarted,
+    hasStarted,
+    itemIndex,
+  ]);
 
   const shouldAnimate = sequence ? hasStarted : startOnView ? isInView : true;
 
@@ -105,7 +111,7 @@ export const TypingAnimation = ({
       motion.create(Component, {
         forwardMotionProps: true,
       }),
-    [Component],
+    [Component]
   );
 
   const [displayedText, setDisplayedText] = useState<string>("");
@@ -143,6 +149,7 @@ export const TypingAnimation = ({
     startOnView,
     isInView,
     started,
+    sequence,
     sequence?.activeIndex,
     sequence?.sequenceStarted,
     itemIndex,
@@ -167,7 +174,7 @@ export const TypingAnimation = ({
     return () => {
       clearInterval(typingEffect);
     };
-  }, [children, duration, started]);
+  }, [children, duration, started, sequence, itemIndex]);
 
   return (
     <MotionComponent
@@ -207,7 +214,7 @@ export const Terminal = ({
     return {
       completeItem: (index: number) => {
         setActiveIndex((current) =>
-          index === current ? current + 1 : current,
+          index === current ? current + 1 : current
         );
       },
       activeIndex,
@@ -230,7 +237,7 @@ export const Terminal = ({
       ref={containerRef}
       className={cn(
         "z-0 h-full max-h-[400px] w-full max-w-lg rounded-xl border border-border bg-background",
-        className,
+        className
       )}
     >
       <div className="flex flex-col gap-y-2 border-b border-border p-4">

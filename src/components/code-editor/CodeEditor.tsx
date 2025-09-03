@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,7 +52,7 @@ export function CodeEditor({
         }
       }
     },
-    [code, language, onCodeChange, onLanguageChange]
+    [language, onCodeChange, onLanguageChange]
   );
 
   // 处理文件拖拽
