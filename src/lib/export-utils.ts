@@ -1,4 +1,4 @@
-import html2canvas from "html2canvas";
+import * as htmlToImage from "html-to-image";
 import { jsPDF } from "jspdf";
 import { ExportOptions } from "@/types";
 
@@ -12,16 +12,20 @@ export async function exportToPNG(
   }
 ): Promise<string> {
   try {
-    const canvas = await html2canvas(element, {
-      scale: options.scale,
-      backgroundColor: null,
-      useCORS: true,
-      allowTaint: true,
+    const dataUrl = await htmlToImage.toPng(element, {
+      pixelRatio: options.scale,
       width: options.width,
       height: options.height,
+      style: {
+        transform: "scale(1)",
+        transformOrigin: "top left",
+      },
+      // 支持现代CSS特性
+      skipFonts: false,
+      includeQueryParams: true,
     });
 
-    return canvas.toDataURL("image/png", options.quality);
+    return dataUrl;
   } catch (error) {
     console.error("Error exporting to PNG:", error);
     throw new Error("Failed to export as PNG");
@@ -38,16 +42,21 @@ export async function exportToJPG(
   }
 ): Promise<string> {
   try {
-    const canvas = await html2canvas(element, {
-      scale: options.scale,
+    const dataUrl = await htmlToImage.toJpeg(element, {
+      pixelRatio: options.scale,
       backgroundColor: "#ffffff",
-      useCORS: true,
-      allowTaint: true,
       width: options.width,
       height: options.height,
+      quality: options.quality,
+      style: {
+        transform: "scale(1)",
+        transformOrigin: "top left",
+      },
+      skipFonts: false,
+      includeQueryParams: true,
     });
 
-    return canvas.toDataURL("image/jpeg", options.quality);
+    return dataUrl;
   } catch (error) {
     console.error("Error exporting to JPG:", error);
     throw new Error("Failed to export as JPG");
@@ -64,24 +73,44 @@ export async function exportToPDF(
   }
 ): Promise<string> {
   try {
-    const canvas = await html2canvas(element, {
-      scale: options.scale,
-      backgroundColor: null,
-      useCORS: true,
-      allowTaint: true,
+    // 首先获取PNG数据
+    const pngDataUrl = await htmlToImage.toPng(element, {
+      pixelRatio: options.scale,
+      backgroundColor: "#ffffff",
       width: options.width,
       height: options.height,
+      style: {
+        transform: "scale(1)",
+        transformOrigin: "top left",
+      },
+      skipFonts: false,
+      includeQueryParams: true,
     });
 
-    const imgData = canvas.toDataURL("image/png", options.quality);
-    const pdf = new jsPDF({
-      orientation: canvas.width > canvas.height ? "landscape" : "portrait",
-      unit: "px",
-      format: [canvas.width, canvas.height],
-    });
+    // 创建临时图片来获取尺寸
+    const img = new Image();
+    img.src = pngDataUrl;
 
-    pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-    return pdf.output("datauristring");
+    return new Promise((resolve, reject) => {
+      img.onload = () => {
+        try {
+          const pdf = new jsPDF({
+            orientation: img.width > img.height ? "landscape" : "portrait",
+            unit: "px",
+            format: [img.width, img.height],
+          });
+
+          pdf.addImage(pngDataUrl, "PNG", 0, 0, img.width, img.height);
+          resolve(pdf.output("datauristring"));
+        } catch (error) {
+          reject(error);
+        }
+      };
+
+      img.onerror = () => {
+        reject(new Error("Failed to load image for PDF creation"));
+      };
+    });
   } catch (error) {
     console.error("Error exporting to PDF:", error);
     throw new Error("Failed to export as PDF");
@@ -99,10 +128,27 @@ export function downloadFile(dataUrl: string, filename: string): void {
 }
 
 // 复制图片到剪贴板
-export async function copyImageToClipboard(dataUrl: string): Promise<void> {
+export async function copyImageToClipboard(
+  element: HTMLElement,
+  options: ExportOptions = { format: "png", quality: 1, scale: 2 }
+): Promise<void> {
   try {
-    const response = await fetch(dataUrl);
-    const blob = await response.blob();
+    // 直接使用html-to-image生成blob
+    const blob = await htmlToImage.toBlob(element, {
+      pixelRatio: options.scale,
+      width: options.width,
+      height: options.height,
+      style: {
+        transform: "scale(1)",
+        transformOrigin: "top left",
+      },
+      skipFonts: false,
+      includeQueryParams: true,
+    });
+
+    if (!blob) {
+      throw new Error("Failed to generate image blob");
+    }
 
     if (navigator.clipboard && window.ClipboardItem) {
       await navigator.clipboard.write([

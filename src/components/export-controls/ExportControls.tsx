@@ -116,8 +116,7 @@ export function ExportControls({
     setIsExporting(true);
     try {
       const options = getOptimizedExportOptions("png", exportQuality);
-      const dataUrl = await exportToPNG(previewRef.current, options);
-      await copyImageToClipboard(dataUrl);
+      await copyImageToClipboard(previewRef.current!, options);
       toast.success("图片已复制到剪贴板");
     } catch (error) {
       console.error("Copy failed:", error);
