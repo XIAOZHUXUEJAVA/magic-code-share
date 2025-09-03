@@ -153,42 +153,68 @@ export default createMagic;`,
         <div className="container mx-auto px-4 py-4">
           <BlurFade delay={0.1}>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <Code2 className="h-8 w-8 text-primary" />
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                <div className="relative flex-shrink-0">
+                  <Code2 className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
                   <BorderBeam size={40} duration={8} delay={2} />
                 </div>
-                <div>
-                  <AnimatedGradientText className="text-2xl font-bold">
-                    <Sparkles className="mr-2 h-5 w-5" />
-                    Magic Code Share
+                <div className="min-w-0">
+                  <AnimatedGradientText className="text-lg sm:text-2xl font-bold truncate">
+                    <Sparkles className="mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                    <span className="hidden sm:inline">Magic Code Share</span>
+                    <span className="sm:hidden">Magic Code</span>
                   </AnimatedGradientText>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs sm:text-sm text-muted-foreground truncate">
                     美观的代码分享工具
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleReset}
-                  className="flex items-center gap-2"
+                  className="hidden sm:flex items-center gap-2"
                 >
                   <RotateCcw className="h-4 w-4" />
                   重置
                 </Button>
                 <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleReset}
+                  className="sm:hidden"
+                  title="重置"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                </Button>
+
+                <Button
                   variant="destructive"
                   size="sm"
                   onClick={showHelpDialog}
-                  className="flex items-center gap-2"
+                  className="hidden sm:flex items-center gap-2"
                 >
                   <HelpCircle className="h-4 w-4" />
                   使用说明
                 </Button>
-                <Button variant="ghost" size="icon" asChild>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={showHelpDialog}
+                  className="sm:hidden"
+                  title="使用说明"
+                >
+                  <HelpCircle className="h-4 w-4" />
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hidden sm:inline-flex"
+                  asChild
+                >
                   <a
                     href="https://github.com"
                     target="_blank"
@@ -198,7 +224,12 @@ export default createMagic;`,
                     <Github className="h-5 w-5" />
                   </a>
                 </Button>
-                <Button variant="ghost" size="icon" asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hidden sm:inline-flex"
+                  asChild
+                >
                   <a
                     href="https://twitter.com"
                     target="_blank"
@@ -215,12 +246,12 @@ export default createMagic;`,
       </header>
 
       {/* 主要内容 */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+      <main className="container mx-auto px-4 py-4 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* 左侧：代码编辑器 */}
-          <div className="xl:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-4 sm:space-y-6">
             <BlurFade delay={0.2}>
-              <Card className="p-6 relative overflow-hidden">
+              <Card className="p-4 sm:p-6 relative overflow-hidden">
                 <BorderBeam size={250} duration={12} delay={9} />
                 <CodeEditor
                   code={snippet.code}
@@ -255,13 +286,20 @@ export default createMagic;`,
           </div>
 
           {/* 右侧：代码预览 */}
-          <div className="xl:col-span-2">
+          <div className="lg:col-span-2 order-first lg:order-last">
             <BlurFade delay={0.5}>
-              <div className="sticky top-24">
-                <div className="text-center mb-6">
-                  <h2 className="text-2xl font-semibold mb-2">实时预览</h2>
-                  <p className="text-muted-foreground">
-                    调整左侧设置，实时查看代码卡片效果
+              <div className="lg:sticky lg:top-24">
+                <div className="text-center mb-4 sm:mb-6">
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-2">
+                    实时预览
+                  </h2>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    <span className="hidden sm:inline">
+                      调整左侧设置，实时查看代码卡片效果
+                    </span>
+                    <span className="sm:hidden">
+                      调整下方设置，查看代码效果
+                    </span>
                   </p>
                 </div>
 
@@ -279,22 +317,26 @@ export default createMagic;`,
 
         {/* 底部信息 */}
         <BlurFade delay={0.6}>
-          <div className="mt-16 pt-8 border-t">
-            <div className="text-center space-y-4">
-              <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+          <div className="mt-8 sm:mt-16 pt-6 sm:pt-8 border-t">
+            <div className="text-center space-y-3 sm:space-y-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                 <span>Made with ❤️ using</span>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap justify-center">
                   <span>Next.js</span>
-                  <Separator orientation="vertical" className="h-4" />
+                  <Separator orientation="vertical" className="h-3 sm:h-4" />
                   <span>React</span>
-                  <Separator orientation="vertical" className="h-4" />
+                  <Separator orientation="vertical" className="h-3 sm:h-4" />
                   <span>TypeScript</span>
-                  <Separator orientation="vertical" className="h-4" />
-                  <span>Tailwind CSS</span>
+                  <Separator
+                    orientation="vertical"
+                    className="h-3 sm:h-4 hidden sm:block"
+                  />
+                  <span className="hidden sm:inline">Tailwind CSS</span>
+                  <span className="sm:hidden">Tailwind</span>
                 </div>
               </div>
 
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-muted-foreground px-4">
                 © 2025 Magic Code Share. 开源项目，欢迎贡献代码。
               </div>
             </div>

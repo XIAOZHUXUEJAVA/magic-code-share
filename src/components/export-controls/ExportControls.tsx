@@ -168,43 +168,53 @@ export function ExportControls({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="export" className="w-full">
+        <Tabs defaultValue="share" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="export" className="flex items-center gap-1">
-              <Download className="h-4 w-4" />
-              导出
-            </TabsTrigger>
-            <TabsTrigger value="share" className="flex items-center gap-1">
+            <TabsTrigger
+              value="share"
+              className="flex items-center gap-1 text-sm"
+            >
               <Link className="h-4 w-4" />
-              分享
+              <span className="hidden sm:inline">分享</span>
+              <span className="sm:hidden">分享</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="export"
+              className="flex items-center gap-1 text-sm"
+            >
+              <Download className="h-4 w-4" />
+              <span className="hidden sm:inline">导出</span>
+              <span className="sm:hidden">导出</span>
             </TabsTrigger>
           </TabsList>
 
           {/* 导出选项 */}
           <TabsContent value="export" className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
-                <Label>导出格式</Label>
+                <Label className="text-sm">导出格式</Label>
                 <Select
                   value={exportFormat}
                   onValueChange={(value: "png" | "jpg" | "pdf") =>
                     setExportFormat(value)
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="text-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="png">
                       <div className="flex items-center gap-2">
                         <Image className="h-4 w-4" />
-                        PNG (透明背景)
+                        <span className="hidden sm:inline">PNG (透明背景)</span>
+                        <span className="sm:hidden">PNG</span>
                       </div>
                     </SelectItem>
                     <SelectItem value="jpg">
                       <div className="flex items-center gap-2">
                         <FileImage className="h-4 w-4" />
-                        JPG (白色背景)
+                        <span className="hidden sm:inline">JPG (白色背景)</span>
+                        <span className="sm:hidden">JPG</span>
                       </div>
                     </SelectItem>
                     <SelectItem value="pdf">
@@ -218,33 +228,39 @@ export function ExportControls({
               </div>
 
               <div className="space-y-2">
-                <Label>导出质量</Label>
+                <Label className="text-sm">导出质量</Label>
                 <Select
                   value={exportQuality}
                   onValueChange={(value: "low" | "medium" | "high") =>
                     setExportQuality(value)
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="text-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="low">
                       <div className="flex items-center justify-between w-full">
                         <span>低质量</span>
-                        <Badge variant="secondary">快速</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          快速
+                        </Badge>
                       </div>
                     </SelectItem>
                     <SelectItem value="medium">
                       <div className="flex items-center justify-between w-full">
                         <span>中等质量</span>
-                        <Badge variant="secondary">平衡</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          平衡
+                        </Badge>
                       </div>
                     </SelectItem>
                     <SelectItem value="high">
                       <div className="flex items-center justify-between w-full">
                         <span>高质量</span>
-                        <Badge variant="secondary">推荐</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          推荐
+                        </Badge>
                       </div>
                     </SelectItem>
                   </SelectContent>
@@ -253,31 +269,39 @@ export function ExportControls({
             </div>
 
             <div className="space-y-2">
-              <Label>自定义文件名 (可选)</Label>
+              <Label className="text-sm">自定义文件名 (可选)</Label>
               <Input
                 placeholder={`${title || "code-snippet"}.${exportFormat}`}
                 value={customFilename}
                 onChange={(e) => setCustomFilename(e.target.value)}
+                className="text-sm"
               />
             </div>
 
             <Separator />
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 sm:gap-3">
               <Button
                 onClick={handleExport}
                 disabled={isExporting}
-                className="w-full"
+                className="w-full text-sm"
+                size="sm"
               >
                 {isExporting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    导出中...
+                    <span className="hidden sm:inline">导出中...</span>
+                    <span className="sm:hidden">导出中</span>
                   </>
                 ) : (
                   <>
                     <Download className="mr-2 h-4 w-4" />
-                    导出为 {exportFormat.toUpperCase()}
+                    <span className="hidden sm:inline">
+                      导出为 {exportFormat.toUpperCase()}
+                    </span>
+                    <span className="sm:hidden">
+                      导出 {exportFormat.toUpperCase()}
+                    </span>
                   </>
                 )}
               </Button>
@@ -286,17 +310,20 @@ export function ExportControls({
                 variant="outline"
                 onClick={handleCopyImage}
                 disabled={isExporting}
-                className="w-full"
+                className="w-full text-sm"
+                size="sm"
               >
                 {isExporting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    处理中...
+                    <span className="hidden sm:inline">处理中...</span>
+                    <span className="sm:hidden">处理中</span>
                   </>
                 ) : (
                   <>
                     <Copy className="mr-2 h-4 w-4" />
-                    复制图片到剪贴板
+                    <span className="hidden sm:inline">复制图片到剪贴板</span>
+                    <span className="sm:hidden">复制图片</span>
                   </>
                 )}
               </Button>
@@ -304,43 +331,47 @@ export function ExportControls({
           </TabsContent>
 
           {/* 分享选项 */}
-          <TabsContent value="share" className="space-y-4">
-            <div className="space-y-4">
-              <div className="text-sm text-muted-foreground">
+          <TabsContent value="share" className="space-y-3 sm:space-y-4">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="text-xs sm:text-sm text-muted-foreground">
                 生成一个分享链接，其他人可以通过链接查看你的代码卡片。
               </div>
 
               <Button
                 onClick={handleGenerateShareLink}
                 disabled={isGeneratingLink}
-                className="w-full"
+                className="w-full text-sm"
+                size="sm"
               >
                 {isGeneratingLink ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    生成中...
+                    <span className="hidden sm:inline">生成中...</span>
+                    <span className="sm:hidden">生成中</span>
                   </>
                 ) : (
                   <>
                     <Link className="mr-2 h-4 w-4" />
-                    生成分享链接
+                    <span className="hidden sm:inline">生成分享链接</span>
+                    <span className="sm:hidden">生成链接</span>
                   </>
                 )}
               </Button>
 
               {shareLink && (
                 <div className="space-y-2">
-                  <Label>分享链接</Label>
+                  <Label className="text-sm">分享链接</Label>
                   <div className="flex gap-2">
                     <Input
                       value={shareLink}
                       readOnly
-                      className="font-mono text-sm"
+                      className="font-mono text-xs sm:text-sm"
                     />
                     <Button
                       variant="outline"
                       size="icon"
                       onClick={handleCopyShareLink}
+                      className="flex-shrink-0"
                     >
                       {linkCopied ? (
                         <Check className="h-4 w-4 text-green-600" />

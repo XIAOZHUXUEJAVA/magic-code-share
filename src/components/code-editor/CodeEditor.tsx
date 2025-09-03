@@ -176,35 +176,43 @@ hello();`,
   }, [language, handleCodeChange]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {/* 标题和作者信息 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         <div className="space-y-2">
-          <Label htmlFor="title">标题 (可选)</Label>
+          <Label htmlFor="title" className="text-sm">
+            标题 (可选)
+          </Label>
           <Input
             id="title"
             placeholder="给你的代码起个标题..."
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
+            className="text-sm"
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="author">作者 (可选)</Label>
+          <Label htmlFor="author" className="text-sm">
+            作者 (可选)
+          </Label>
           <Input
             id="author"
             placeholder="你的名字..."
             value={author}
             onChange={(e) => onAuthorChange(e.target.value)}
+            className="text-sm"
           />
         </div>
       </div>
 
       {/* 语言选择和工具栏 */}
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="space-y-3 sm:space-y-0 sm:flex sm:flex-wrap sm:items-center sm:gap-4">
         <div className="flex items-center gap-2">
-          <Label htmlFor="language">语言:</Label>
+          <Label htmlFor="language" className="text-sm whitespace-nowrap">
+            语言:
+          </Label>
           <Select value={language} onValueChange={onLanguageChange}>
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-32 sm:w-40 text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -218,27 +226,29 @@ hello();`,
           </Select>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Button
             variant="outline"
             size="sm"
             onClick={generateSampleCode}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 text-sm"
           >
             <Wand2 className="h-4 w-4" />
-            示例代码
+            <span className="hidden sm:inline">示例代码</span>
+            <span className="sm:hidden">示例</span>
           </Button>
 
           <label htmlFor="file-upload">
             <Button
               variant="outline"
               size="sm"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 text-sm"
               asChild
             >
               <span>
                 <Upload className="h-4 w-4" />
-                上传文件
+                <span className="hidden sm:inline">上传文件</span>
+                <span className="sm:hidden">上传</span>
               </span>
             </Button>
           </label>
@@ -265,7 +275,7 @@ hello();`,
           placeholder="在这里粘贴你的代码，或者拖拽文件到这里..."
           value={code}
           onChange={(e) => handleCodeChange(e.target.value)}
-          className="min-h-[400px] text-sm resize-none"
+          className="min-h-[300px] sm:min-h-[400px] text-xs sm:text-sm resize-none"
           style={{
             fontFamily:
               "var(--font-geist-mono), Consolas, 'Fira Code', Monaco, 'Courier New', monospace",
