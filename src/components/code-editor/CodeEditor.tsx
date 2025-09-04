@@ -278,7 +278,7 @@ hello();`,
           className="min-h-[300px] sm:min-h-[400px] text-xs sm:text-sm resize-none"
           style={{
             fontFamily:
-              "var(--font-geist-mono), Consolas, 'Fira Code', Monaco, 'Courier New', monospace",
+              "var(--font-fira-code), var(--font-jetbrains-mono), Consolas, 'Fira Code', 'JetBrains Mono', Monaco, 'Courier New', monospace",
           }}
         />
 

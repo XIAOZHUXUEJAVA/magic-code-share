@@ -112,7 +112,7 @@ export const PRESET_THEMES: CodeTheme[] = [
 // 默认设置
 export const DEFAULT_SETTINGS: CodeSettings = {
   fontSize: 14,
-  fontFamily: "Fira Code, Monaco, Consolas, monospace",
+  fontFamily: "var(--font-fira-code), Fira Code, Monaco, Consolas, monospace",
   lineNumbers: true,
   padding: 32,
   borderRadius: 12,

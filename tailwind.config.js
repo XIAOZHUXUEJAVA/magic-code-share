@@ -118,6 +118,8 @@ export default {
       },
       fontFamily: {
         mono: [
+          "var(--font-fira-code)",
+          "var(--font-jetbrains-mono)",
           "JetBrains Mono",
           "Fira Code",
           "Monaco",

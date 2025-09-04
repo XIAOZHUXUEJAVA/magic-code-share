@@ -255,8 +255,11 @@ export function ThemeConfigurator({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Fira Code, Monaco, Consolas, monospace">
+                    <SelectItem value="var(--font-fira-code), Fira Code, Monaco, Consolas, monospace">
                       Fira Code
+                    </SelectItem>
+                    <SelectItem value="var(--font-jetbrains-mono), JetBrains Mono, Monaco, Consolas, monospace">
+                      JetBrains Mono
                     </SelectItem>
                     <SelectItem value="Monaco, Consolas, monospace">
                       Monaco
@@ -269,9 +272,6 @@ export function ThemeConfigurator({
                     </SelectItem>
                     <SelectItem value="'SF Mono', Monaco, monospace">
                       SF Mono
-                    </SelectItem>
-                    <SelectItem value="'JetBrains Mono', monospace">
-                      JetBrains Mono
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -319,7 +319,8 @@ export function ThemeConfigurator({
                         applyPresetTheme(defaultTheme);
                         updateSettings({
                           fontSize: 14,
-                          fontFamily: "Fira Code, Monaco, Consolas, monospace",
+                          fontFamily:
+                            "var(--font-fira-code), Fira Code, Monaco, Consolas, monospace",
                           lineNumbers: true,
                           padding: 32,
                           borderRadius: 12,
