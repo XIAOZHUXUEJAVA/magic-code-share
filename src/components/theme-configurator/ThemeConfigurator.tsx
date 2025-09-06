@@ -92,37 +92,31 @@ export function ThemeConfigurator({
             <TabsContent value="themes" className="space-y-4">
               <div className="space-y-3">
                 <Label>预设主题</Label>
-                <div className="grid grid-cols-2 gap-3">
-                  {PRESET_THEMES.map((presetTheme) => (
-                    <Button
-                      key={presetTheme.name}
-                      variant={
-                        theme.name === presetTheme.name ? "default" : "outline"
-                      }
-                      className="h-auto p-3 flex flex-col items-start"
-                      onClick={() => applyPresetTheme(presetTheme)}
-                    >
-                      <div
-                        className="w-full h-8 rounded mb-2"
-                        style={{ background: presetTheme.background }}
-                      />
-                      <span className="text-sm font-medium">
-                        {presetTheme.name}
-                      </span>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <Label>自定义背景</Label>
-                <ColorPicker
-                  value={theme.background}
-                  onChange={(background) => {
-                    updateTheme({ background });
-                    setCustomBackground(background);
+                <Select
+                  value={theme.name}
+                  onValueChange={(value) => {
+                    const selectedTheme = PRESET_THEMES.find(
+                      (t) => t.name === value
+                    );
+                    if (selectedTheme) {
+                      applyPresetTheme(selectedTheme);
+                    }
                   }}
-                />
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PRESET_THEMES.map((presetTheme) => (
+                      <SelectItem
+                        key={presetTheme.name}
+                        value={presetTheme.name}
+                      >
+                        {presetTheme.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-3">
@@ -147,6 +141,16 @@ export function ThemeConfigurator({
                     {/* <SelectItem value="terminal">Terminal</SelectItem> */}
                   </SelectContent>
                 </Select>
+              </div>
+              <div className="space-y-3">
+                <Label>自定义背景</Label>
+                <ColorPicker
+                  value={theme.background}
+                  onChange={(background) => {
+                    updateTheme({ background });
+                    setCustomBackground(background);
+                  }}
+                />
               </div>
             </TabsContent>
 
