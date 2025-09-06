@@ -1,6 +1,6 @@
 # Magic Code Share
 
-一个美观的代码分享工具，使用 Next.js + React + TypeScript + TailwindCSS + Shadcn + Magic UI 构建。
+一个美观的代码分享工具，使用 Next.js + React + TypeScript + TailwindCSS + Shadcn UI + Magic UI 构建。
 
 ## ✨ 功能特性
 
@@ -130,16 +130,12 @@ src/
 - 分享链接生成
 - 剪贴板操作
 
-
-
-
 ## 🙏 致谢
 
 - [carbon.now.sh](https://carbon.now.sh) - 灵感来源
 - [Magic UI](https://magicui.design) - 美观的 UI 组件
 - [Shadcn/ui](https://ui.shadcn.com) - 优秀的组件库
 - [Next.js](https://nextjs.org) - 强大的 React 框架
-
 
 ---
 

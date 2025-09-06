@@ -216,27 +216,12 @@ export default createMagic;`,
                   asChild
                 >
                   <a
-                    href="https://github.com"
+                    href="https://github.com/XIAOZHUXUEJAVA/magic-code-share"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="GitHub"
                   >
                     <Github className="h-5 w-5" />
-                  </a>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="hidden sm:inline-flex"
-                  asChild
-                >
-                  <a
-                    href="https://twitter.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Twitter"
-                  >
-                    <Twitter className="h-5 w-5" />
                   </a>
                 </Button>
               </div>
