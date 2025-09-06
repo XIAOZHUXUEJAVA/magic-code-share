@@ -115,6 +115,7 @@ export function ThemeConfigurator({
               </div>
 
               <div className="space-y-3">
+                <Label>自定义背景</Label>
                 <ColorPicker
                   value={theme.background}
                   onChange={(background) => {
