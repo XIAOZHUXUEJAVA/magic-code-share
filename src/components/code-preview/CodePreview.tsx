@@ -482,7 +482,7 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
       <div
         ref={ref}
         className={cn(
-          "w-full mx-auto",
+          "w-full mx-auto rounded-lg overflow-hidden",
           isMobile ? "max-w-full p-2 sm:p-4" : "max-w-4xl p-8",
           className
         )}

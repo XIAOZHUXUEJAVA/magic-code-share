@@ -288,7 +288,7 @@ export default createMagic;`,
                   </p>
                 </div>
 
-                <div className="relative">
+                <div className="relative rounded-lg">
                   <CodePreview
                     ref={previewRef}
                     snippet={snippet}
