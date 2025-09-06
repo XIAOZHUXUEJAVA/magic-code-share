@@ -1,6 +1,6 @@
 # Magic Code Share
 
-一个美观的代码分享工具，类似于 [carbon.now.sh](https://carbon.now.sh)，使用 Next.js + React + TypeScript + TailwindCSS + Shadcn + Magic UI 构建。
+一个美观的代码分享工具，使用 Next.js + React + TypeScript + TailwindCSS + Shadcn + Magic UI 构建。
 
 ## ✨ 功能特性
 
