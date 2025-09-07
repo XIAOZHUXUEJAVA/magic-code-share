@@ -160,14 +160,9 @@ export function ThemeConfigurator({
                 <Label>窗口样式</Label>
                 <Select
                   value={theme.windowStyle}
-                  onValueChange={(
-                    value:
-                      | "macos"
-                      | "windows"
-                      | "terminal"
-                      | "safari"
-                      | "iphone"
-                  ) => updateTheme({ windowStyle: value })}
+                  onValueChange={(value: "macos" | "windows") =>
+                    updateTheme({ windowStyle: value })
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -175,9 +170,6 @@ export function ThemeConfigurator({
                   <SelectContent>
                     <SelectItem value="macos">macOS</SelectItem>
                     <SelectItem value="windows">Windows</SelectItem>
-                    <SelectItem value="terminal">Terminal</SelectItem>
-                    <SelectItem value="safari">Safari</SelectItem>
-                    <SelectItem value="iphone">iPhone</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

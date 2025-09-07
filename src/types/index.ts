@@ -13,7 +13,7 @@ export interface CodeSnippet {
 export interface CodeTheme {
   name: string;
   background: string;
-  windowStyle: "macos" | "windows" | "terminal" | "safari" | "iphone";
+  windowStyle: "macos" | "windows";
   syntaxTheme: string;
 }
 
@@ -231,12 +231,6 @@ export const PRESET_THEMES: CodeTheme[] = [
     name: "Shades of Purple",
     background: "linear-gradient(135deg, #2d2b55 0%, #1e1e3f 100%)",
     windowStyle: "macos",
-    syntaxTheme: "vs-dark",
-  },
-  {
-    name: "Terminal",
-    background: "linear-gradient(135deg, #000000 0%, #1a1a1a 100%)",
-    windowStyle: "terminal",
     syntaxTheme: "vs-dark",
   },
 ];

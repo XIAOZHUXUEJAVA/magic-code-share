@@ -13,7 +13,7 @@
 ### 主题配置
 
 - 28 种预设主题（GitHub、VS Code、Dracula、One Dark 等）
-- 5 种窗口样式（macOS、Windows、Terminal、Safari、iPhone）
+- 2 种窗口样式（macOS、Windows）
 - 自定义渐变背景
 - 字体、布局、圆角等样式配置
 

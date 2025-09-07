@@ -11,9 +11,7 @@ import {
   tomorrow,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { CodeSnippet } from "@/types";
-import { Safari } from "@/components/magicui/safari";
-import { Terminal } from "@/components/magicui/terminal";
-import IPhone15Pro from "@/components/magicui/iphone-15-pro";
+
 import { CopyButton } from "@/components/ui/copy-button";
 import { BorderBeam } from "@/components/magicui/border-beam";
 import { cn } from "@/lib/utils";
@@ -34,7 +32,6 @@ const syntaxThemes = {
   "github-light": vs,
   "github-dark": dark,
   monokai: atomDark,
-  terminal: dark,
 };
 
 export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
@@ -298,28 +295,6 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
       );
 
       switch (theme.windowStyle) {
-        case "safari":
-          return (
-            <Safari url="https://magic-code-share.com" className="w-full">
-              {content}
-            </Safari>
-          );
-
-        case "terminal":
-          return <Terminal className="w-full">{content}</Terminal>;
-
-        case "iphone":
-          return (
-            <IPhone15Pro
-              className={cn(
-                "mx-auto",
-                isMobile ? "w-full max-w-xs" : "w-full max-w-sm"
-              )}
-            >
-              {content}
-            </IPhone15Pro>
-          );
-
         case "macos":
           return (
             <div className="relative">
