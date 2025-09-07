@@ -73,7 +73,7 @@ export function HelpDialog({ isOpen, onClose }: HelpDialogProps) {
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       Magic Code Share
                       是一个美观的代码分享工具，帮助你创建精美的代码截图和分享链接。
-                      支持多种编程语言语法高亮、自定义主题、多种窗口样式等功能。
+                      支持多种编程语言语法高亮、多种窗口样式等功能。
                     </p>
                   </div>
 
@@ -97,7 +97,7 @@ export function HelpDialog({ isOpen, onClose }: HelpDialogProps) {
                         <div>
                           <h4 className="font-medium">主题配置</h4>
                           <p className="text-sm text-muted-foreground">
-                            多种预设主题，自定义背景色、字体、窗口样式等
+                            多种预设主题，自定义字体、窗口样式等
                           </p>
                         </div>
                       </div>
@@ -117,7 +117,7 @@ export function HelpDialog({ isOpen, onClose }: HelpDialogProps) {
                         <div>
                           <h4 className="font-medium">分享链接</h4>
                           <p className="text-sm text-muted-foreground">
-                            生成分享链接，支持社交媒体分享和嵌入代码
+                            生成分享链接
                           </p>
                         </div>
                       </div>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Generate All Favicons</title>
+  </head>
+  <body>
+    <h2>Favicon Generator for Magic Code Share</h2>
+    <p>Click the buttons below to generate different sized favicons:</p>
+
+    <button onclick="generateFavicon(16)">Generate 16x16</button>
+    <button onclick="generateFavicon(32)">Generate 32x32</button>
+    <button onclick="generateFavicon(180)">
+      Generate Apple Touch Icon (180x180)
+    </button>
+    <button onclick="generateFavicon(192)">
+      Generate Android Chrome (192x192)
+    </button>
+    <button onclick="generateFavicon(512)">
+      Generate Android Chrome (512x512)
+    </button>
+
+    <canvas
+      id="canvas"
+      style="border: 1px solid #ccc; margin-top: 20px"
+    ></canvas>
+
+    <script>
+      function generateFavicon(size) {
+        const canvas = document.getElementById("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d");
+
+        // 缩放因子
+        const scale = size / 32;
+        ctx.scale(scale, scale);
+
+        // 创建渐变背景
+        const gradient = ctx.createLinearGradient(0, 0, 32, 32);
+        gradient.addColorStop(0, "#6366f1");
+        gradient.addColorStop(1, "#8b5cf6");
+
+        // 绘制背景
+        ctx.fillStyle = gradient;
+        ctx.roundRect(0, 0, 32, 32, 6);
+        ctx.fill();
+
+        // 绘制代码窗口
+        ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+        ctx.roundRect(4, 6, 24, 16, 2);
+        ctx.fill();
+
+        // 绘制窗口控制按钮
+        ctx.fillStyle = "#ff5f57";
+        ctx.beginPath();
+        ctx.arc(7, 9, 1, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.fillStyle = "#ffbd2e";
+        ctx.beginPath();
+        ctx.arc(10, 9, 1, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.fillStyle = "#28ca42";
+        ctx.beginPath();
+        ctx.arc(13, 9, 1, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // 绘制代码行
+        ctx.fillStyle = "rgba(99, 102, 241, 0.7)";
+        ctx.roundRect(6, 12, 8, 1.5, 0.5);
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(139, 92, 246, 0.6)";
+        ctx.roundRect(6, 14.5, 12, 1.5, 0.5);
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(99, 102, 241, 0.5)";
+        ctx.roundRect(6, 17, 6, 1.5, 0.5);
+        ctx.fill();
+
+        // 绘制魔法星星 (只在较大尺寸显示)
+        if (size >= 32) {
+          ctx.fillStyle = "#fbbf24";
+          ctx.font = `${8 * scale}px Arial`;
+          ctx.fillText("✨", 22, 12);
+          ctx.fillText("✨", 24, 20);
+          ctx.fillText("✨", 20, 26);
+        }
+
+        // 绘制分享箭头
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+        ctx.lineWidth = 1.5;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        ctx.beginPath();
+        ctx.moveTo(18, 24);
+        ctx.lineTo(20, 22);
+        ctx.lineTo(18, 20);
+        ctx.moveTo(20, 22);
+        ctx.lineTo(14, 22);
+        ctx.stroke();
+
+        // 重置缩放
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+        // 下载文件
+        canvas.toBlob(function (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+
+          let filename;
+          switch (size) {
+            case 16:
+              filename = "favicon-16x16.png";
+              break;
+            case 32:
+              filename = "favicon-32x32.png";
+              break;
+            case 180:
+              filename = "apple-touch-icon.png";
+              break;
+            case 192:
+              filename = "android-chrome-192x192.png";
+              break;
+            case 512:
+              filename = "android-chrome-512x512.png";
+              break;
+            default:
+              filename = `favicon-${size}x${size}.png`;
+          }
+
+          a.download = filename;
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      }
+    </script>
+  </body>
+</html>

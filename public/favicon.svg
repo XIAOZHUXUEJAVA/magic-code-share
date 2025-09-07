@@ -1,0 +1,46 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景渐变 -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="code-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#f1f5f9;stop-opacity:0.8" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景圆角矩形 -->
+  <rect width="32" height="32" rx="6" fill="url(#bg-gradient)"/>
+  
+  <!-- 代码窗口 -->
+  <rect x="4" y="6" width="24" height="16" rx="2" fill="url(#code-gradient)" opacity="0.9"/>
+  
+  <!-- 窗口控制按钮 -->
+  <circle cx="7" cy="9" r="1" fill="#ff5f57" opacity="0.8"/>
+  <circle cx="10" cy="9" r="1" fill="#ffbd2e" opacity="0.8"/>
+  <circle cx="13" cy="9" r="1" fill="#28ca42" opacity="0.8"/>
+  
+  <!-- 代码行 -->
+  <rect x="6" y="12" width="8" height="1.5" rx="0.5" fill="#6366f1" opacity="0.7"/>
+  <rect x="6" y="14.5" width="12" height="1.5" rx="0.5" fill="#8b5cf6" opacity="0.6"/>
+  <rect x="6" y="17" width="6" height="1.5" rx="0.5" fill="#6366f1" opacity="0.5"/>
+  
+  <!-- 魔法星星效果 -->
+  <g filter="url(#glow)">
+    <path d="M24 8 L25 10 L27 9 L25 11 L24 13 L23 11 L21 9 L23 10 Z" fill="#fbbf24" opacity="0.8"/>
+    <path d="M26 18 L26.5 19 L27.5 18.5 L26.5 19.5 L26 20.5 L25.5 19.5 L24.5 18.5 L25.5 19 Z" fill="#fbbf24" opacity="0.6"/>
+    <path d="M22 24 L22.5 25 L23.5 24.5 L22.5 25.5 L22 26.5 L21.5 25.5 L20.5 24.5 L21.5 25 Z" fill="#fbbf24" opacity="0.7"/>
+  </g>
+  
+  <!-- 分享箭头 -->
+  <path d="M18 24 L20 22 L18 20 M20 22 L14 22" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+</svg>
