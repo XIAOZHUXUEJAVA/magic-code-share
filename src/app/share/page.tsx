@@ -12,7 +12,11 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CodeSnippet } from "@/types";
-import { decodeSnippetFromUrl, getShareStats } from "@/lib/share-utils";
+import {
+  decodeSnippetFromUrl,
+  getShareStats,
+  resetViewCount,
+} from "@/lib/share-utils";
 import { cn } from "@/lib/utils";
 import {
   Code2,
@@ -74,6 +78,15 @@ function SharePageContent() {
       toast.success("分享链接已复制到剪贴板");
     } catch {
       toast.error("复制链接失败");
+    }
+  };
+
+  const handleResetViews = () => {
+    if (window.location.href) {
+      resetViewCount(window.location.href);
+      // 重新加载统计信息
+      setStats(getShareStats(window.location.href));
+      toast.success("查看次数已重置");
     }
   };
 
@@ -239,7 +252,7 @@ function SharePageContent() {
 
           {/* 操作按钮 */}
           <BlurFade delay={0.4}>
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-center gap-4 flex-wrap">
               <Button asChild>
                 <Link href="/">
                   <Code2 className="mr-2 h-4 w-4" />
@@ -250,6 +263,16 @@ function SharePageContent() {
                 <Share2 className="mr-2 h-4 w-4" />
                 分享这个代码
               </Button>
+              {/* 开发者工具 - 仅在开发环境显示 */}
+              {process.env.NODE_ENV === "development" && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleResetViews}
+                >
+                  重置查看次数
+                </Button>
+              )}
             </div>
           </BlurFade>
 

@@ -137,23 +137,73 @@ export function validateShareUrl(url: string): boolean {
   }
 }
 
-// 获取分享链接的统计信息（模拟）
+// 获取分享链接的统计信息
 export function getShareStats(url: string): { views: number; createdAt: Date } {
-  // 在实际应用中，这里可以从后端获取统计信息
   // 尝试从URL中解析创建时间
   const snippet = decodeSnippetFromUrl(url);
   const createdAt = snippet?.createdAt || new Date();
 
-  // 使用URL哈希生成一致的模拟数据，避免水合错误
-  const hash = url.split("").reduce((a, b) => {
-    a = (a << 5) - a + b.charCodeAt(0);
-    return a & a;
-  }, 0);
+  // 获取查看次数
+  const views = getViewCount(url);
 
   return {
-    views: Math.abs(hash % 100) + 1,
+    views: views,
     createdAt: createdAt,
   };
+}
+
+// 获取查看次数
+function getViewCount(url: string): number {
+  if (typeof window === "undefined") {
+    return 1; // 服务端渲染时返回默认值
+  }
+
+  try {
+    // 生成URL的唯一标识
+    const urlHash = btoa(url)
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .slice(0, 16);
+    const storageKey = `share_views_${urlHash}`;
+    const sessionKey = `share_session_${urlHash}`;
+
+    // 检查当前会话是否已经计数
+    const currentSession = sessionStorage.getItem(sessionKey);
+    const now = Date.now();
+
+    // 从localStorage获取查看次数
+    const stored = localStorage.getItem(storageKey);
+    let currentViews = stored ? parseInt(stored, 10) : 0;
+
+    // 如果是新会话或者距离上次查看超过30分钟，则增加计数
+    if (
+      !currentSession ||
+      now - parseInt(currentSession, 10) > 30 * 60 * 1000
+    ) {
+      currentViews += 1;
+      localStorage.setItem(storageKey, currentViews.toString());
+      sessionStorage.setItem(sessionKey, now.toString());
+    }
+
+    return currentViews;
+  } catch (error) {
+    console.error("获取查看次数失败:", error);
+    return 1;
+  }
+}
+
+// 重置查看次数（用于测试）
+export function resetViewCount(url: string): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    const urlHash = btoa(url)
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .slice(0, 16);
+    const storageKey = `share_views_${urlHash}`;
+    localStorage.removeItem(storageKey);
+  } catch (error) {
+    console.error("重置查看次数失败:", error);
+  }
 }
 
 // 复制链接到剪贴板
