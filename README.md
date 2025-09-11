@@ -2,6 +2,8 @@
 
 一个美观的代码分享工具，支持多种主题和导出格式。
 
+使用链接：https://magiccodeshare.netlify.app/
+
 ## 功能特性
 
 ### 代码编辑
