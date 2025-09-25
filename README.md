@@ -92,3 +92,7 @@ src/
 - [Carbon](https://carbon.now.sh) - 设计灵感
 - [Shadcn/ui](https://ui.shadcn.com) - UI 组件库
 - [Magic UI](https://magicui.design) - 动画组件
+
+## 许可证
+
+本项目基于 MIT 许可证开源。详情请查看 [LICENSE](LICENSE) 文件。
