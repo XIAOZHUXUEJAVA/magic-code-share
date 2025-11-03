@@ -33,7 +33,7 @@ import {
   Download,
   Share2,
   Copy,
-  Image,
+  Image as ImageIcon,
   FileImage,
   FileText,
   Link,
@@ -45,14 +45,12 @@ import { toast } from "sonner";
 interface ExportControlsProps {
   previewRef: React.RefObject<HTMLDivElement | null>;
   title: string | undefined;
-  code: string;
   snippet: CodeSnippet;
 }
 
 export function ExportControls({
   previewRef,
   title,
-  code,
   snippet,
 }: ExportControlsProps) {
   const [isExporting, setIsExporting] = useState(false);
@@ -131,7 +129,7 @@ export function ExportControls({
   const handleGenerateShareLink = async () => {
     setIsGeneratingLink(true);
     try {
-      const link = encodeSnippetToUrl(snippet);
+      const link = await encodeSnippetToUrl(snippet);
       setShareLink(link);
       toast.success("分享链接已生成");
     } catch (error) {
@@ -205,7 +203,7 @@ export function ExportControls({
                   <SelectContent>
                     <SelectItem value="png">
                       <div className="flex items-center gap-2">
-                        <Image className="h-4 w-4" />
+                        <ImageIcon className="h-4 w-4" />
                         <span className="hidden sm:inline">PNG (透明背景)</span>
                         <span className="sm:hidden">PNG</span>
                       </div>

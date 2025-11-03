@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useMemo, useEffect, useState } from "react";
+import { forwardRef, useMemo, useCallback, useEffect, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
   dark,
@@ -76,7 +76,7 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
     };
 
     // 智能代码换行处理
-    const processCodeForMobile = (code: string): string => {
+    const processCodeForMobile = useCallback((code: string): string => {
       if (!isMobile) return code;
 
       const maxLineLength = screenWidth <= 480 ? 30 : 40;
@@ -89,40 +89,20 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
         } else {
           // 保持缩进
           const indent = line.match(/^\s*/)?.[0] || "";
-          const content = line.trim();
+          const content = line.slice(indent.length);
+          const words = content.split(/(\s+)/);
+          let currentLine = indent;
 
           // 智能分割策略
-          if (
-            content.includes("(") ||
-            content.includes("{") ||
-            content.includes("[")
-          ) {
-            // 在括号处分割
-            const parts = content.split(/([({[])/);
-            let currentLine = indent;
-
-            for (let i = 0; i < parts.length; i++) {
-              const part = parts[i];
-              if ((currentLine + part).length <= maxLineLength) {
-                currentLine += part;
-              } else {
-                if (currentLine.trim()) {
-                  processedLines.push(currentLine);
-                  currentLine = indent + "  " + part; // 增加缩进
-                } else {
-                  currentLine += part;
-                }
-              }
-            }
-
-            if (currentLine.trim()) {
-              processedLines.push(currentLine);
+          if (words.length === 1) {
+            // 单个长单词，强制分割
+            for (let i = 0; i < content.length; i += maxLineLength - indent.length) {
+              processedLines.push(
+                indent + content.slice(i, i + maxLineLength - indent.length)
+              );
             }
           } else {
-            // 按空格分割
-            const words = content.split(" ");
-            let currentLine = indent;
-
+            // 多个单词，智能换行
             for (const word of words) {
               const testLine =
                 currentLine + (currentLine === indent ? "" : " ") + word;
@@ -133,7 +113,6 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
                   processedLines.push(currentLine);
                   currentLine = indent + "  " + word;
                 } else {
-                  // 单词太长，强制分割
                   processedLines.push(currentLine + word);
                   currentLine = indent;
                 }
@@ -148,12 +127,12 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
       });
 
       return processedLines.join("\n");
-    };
+    }, [isMobile, screenWidth]);
 
     // 处理后的代码
     const processedCode = useMemo(() => {
       return processCodeForMobile(code);
-    }, [code, isMobile, screenWidth]);
+    }, [code, processCodeForMobile]);
 
     // 渲染代码内容
     const renderCodeContent = () => (
@@ -168,7 +147,7 @@ export const CodePreview = forwardRef<HTMLDivElement, CodePreviewProps>(
             fontSize: `${getResponsiveFontSize()}px`,
             fontFamily: settings.fontFamily,
             borderRadius: settings.borderRadius,
-            background: "transparent",
+            backgroundColor: "transparent",
             overflowX: isMobile ? "auto" : "visible", // 移动端允许横向滚动
             maxWidth: "100%",
           }}

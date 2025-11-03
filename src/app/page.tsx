@@ -26,7 +26,6 @@ import {
   Code2,
   Sparkles,
   Github,
-  Twitter,
   RotateCcw,
   HelpCircle,
 } from "lucide-react";
@@ -264,7 +263,6 @@ export default createMagic;`,
               <ExportControls
                 previewRef={previewRef}
                 title={snippet.title}
-                code={snippet.code}
                 snippet={snippet}
               />
             </BlurFade>
