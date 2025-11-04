@@ -267,7 +267,6 @@ export default function SharePage() {
             <div className="pt-8 border-t">
               <div className="text-center space-y-4">
                 <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground flex-wrap">
-                  <span>Made with ❤️ using</span>
                   <div className="flex items-center gap-2 flex-wrap justify-center">
                     <span>Next.js</span>
                     <Separator orientation="vertical" className="h-4" />
