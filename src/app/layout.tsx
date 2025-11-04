@@ -47,12 +47,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
+};
+
+// Next.js 15 要求 viewport 单独导出
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

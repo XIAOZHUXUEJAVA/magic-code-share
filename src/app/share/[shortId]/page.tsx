@@ -12,10 +12,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CodeSnippet } from "@/types";
-import {
-  decodeSnippetFromShortId,
-  validateShortId,
-} from "@/lib/share-utils";
+import { decodeSnippetFromShortId, validateShortId } from "@/lib/share-utils";
 import { cn } from "@/lib/utils";
 import {
   Code2,
@@ -27,6 +24,7 @@ import {
   FileCode,
   AlertCircle,
   Home,
+  Eye,
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -217,6 +215,13 @@ export default function SharePage() {
                     <Calendar className="h-4 w-4" />
                     {snippet.createdAt.toLocaleDateString("zh-CN")}
                   </div>
+                  {"viewCount" in snippet &&
+                    snippet.viewCount !== undefined && (
+                      <div className="flex items-center gap-1">
+                        <Eye className="h-4 w-4" />
+                        {snippet.viewCount} 次浏览
+                      </div>
+                    )}
                   <Badge variant="secondary">{snippet.language}</Badge>
                 </div>
               </CardHeader>

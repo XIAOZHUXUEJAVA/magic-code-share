@@ -22,13 +22,7 @@ import {
   DEFAULT_SETTINGS,
 } from "@/types";
 import { cn } from "@/lib/utils";
-import {
-  Code2,
-  Sparkles,
-  Github,
-  RotateCcw,
-  HelpCircle,
-} from "lucide-react";
+import { Code2, Sparkles, Github, RotateCcw, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export default function HomePage() {
@@ -303,7 +297,6 @@ export default createMagic;`,
           <div className="mt-8 sm:mt-16 pt-6 sm:pt-8 border-t">
             <div className="text-center space-y-3 sm:space-y-4">
               <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
-                <span>Made with ❤️ using</span>
                 <div className="flex items-center gap-2 flex-wrap justify-center">
                   <span>Next.js</span>
                   <Separator orientation="vertical" className="h-3 sm:h-4" />
@@ -320,7 +313,7 @@ export default createMagic;`,
               </div>
 
               <div className="text-xs text-muted-foreground px-4">
-                © 2025 Magic Code Share. 开源项目，欢迎贡献代码。
+                © 2025 Magic Code Share.
               </div>
             </div>
           </div>

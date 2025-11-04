@@ -25,8 +25,8 @@ export async function encodeSnippetToUrl(snippet: CodeSnippet): Promise<string> 
   }
 }
 
-// 从后端 API 获取代码片段
-export async function decodeSnippetFromShortId(shortId: string): Promise<CodeSnippet | null> {
+// 从后端 API 获取代码片段（包含分享链接的元数据）
+export async function decodeSnippetFromShortId(shortId: string): Promise<(CodeSnippet & { viewCount?: number; lastViewedAt?: Date }) | null> {
   try {
     const response = await fetch(`/api/share/${shortId}`);
 
@@ -50,18 +50,22 @@ export async function decodeSnippetFromShortId(shortId: string): Promise<CodeSni
       return null;
     }
 
-    // 创建代码片段对象
-    const snippet: CodeSnippet = {
+    // 创建代码片段对象，使用数据库的 created_at 作为分享链接创建时间
+    const snippet: CodeSnippet & { viewCount?: number; lastViewedAt?: Date } = {
       id: `shared-${result.data.short_id}`,
       code: shareData.code,
       language: shareData.language,
       title: shareData.title || "分享的代码",
       author: shareData.author || "匿名用户",
-      createdAt: shareData.createdAt
-        ? new Date(shareData.createdAt)
+      createdAt: result.data.created_at
+        ? new Date(result.data.created_at)
         : new Date(),
       theme: shareData.theme || DEFAULT_THEME,
       settings: shareData.settings || DEFAULT_SETTINGS,
+      viewCount: result.data.view_count || 0,
+      lastViewedAt: result.data.last_viewed_at
+        ? new Date(result.data.last_viewed_at)
+        : undefined,
     };
 
     return snippet;
