@@ -8,6 +8,7 @@ export interface CodeSnippet {
   createdAt: Date;
   theme: CodeTheme;
   settings: CodeSettings;
+  viewCount?: number;
 }
 
 export interface CodeTheme {

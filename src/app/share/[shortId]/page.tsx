@@ -215,13 +215,12 @@ export default function SharePage() {
                     <Calendar className="h-4 w-4" />
                     {snippet.createdAt.toLocaleDateString("zh-CN")}
                   </div>
-                  {"viewCount" in snippet &&
-                    snippet.viewCount !== undefined && (
-                      <div className="flex items-center gap-1">
-                        <Eye className="h-4 w-4" />
-                        {snippet.viewCount} 次浏览
-                      </div>
-                    )}
+                  {snippet.viewCount !== undefined && (
+                    <div className="flex items-center gap-1">
+                      <Eye className="h-4 w-4" />
+                      {snippet.viewCount} 次浏览
+                    </div>
+                  )}
                   <Badge variant="secondary">{snippet.language}</Badge>
                 </div>
               </CardHeader>

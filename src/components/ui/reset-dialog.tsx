@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BorderBeam } from "@/components/magicui/border-beam";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text";
-import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import { RotateCcw, AlertTriangle, X } from "lucide-react";
 
 interface ResetDialogProps {
