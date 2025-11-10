@@ -44,10 +44,10 @@ export function CodeEditor({
     (newCode: string) => {
       onCodeChange(newCode);
 
-      // 如果当前语言是自动检测或者代码发生了显著变化，尝试重新检测
-      if (language === "auto" || newCode.length > 50) {
+      // 只在语言设置为"自动检测"时才进行检测
+      if (language === "auto" && newCode.trim().length > 0) {
         const detectedLang = detectLanguage(newCode);
-        if (detectedLang && detectedLang !== language) {
+        if (detectedLang) {
           onLanguageChange(detectedLang);
         }
       }
@@ -159,6 +159,289 @@ def quick_sort(arr):
     return quick_sort(left) + middle + quick_sort(right)
 
 print(quick_sort([3, 6, 8, 10, 1, 2, 1]))`,
+
+      java: `// Java 示例
+import java.util.ArrayList;
+import java.util.List;
+
+public class HelloWorld {
+    public static void main(String[] args) {
+        List<String> items = new ArrayList<>();
+        items.add("Hello");
+        items.add("World");
+        
+        for (String item : items) {
+            System.out.println(item);
+        }
+    }
+}`,
+
+      cpp: `// C++ 示例
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<int> numbers = {1, 2, 3, 4, 5};
+    
+    for (int num : numbers) {
+        cout << num << " ";
+    }
+    cout << endl;
+    
+    return 0;
+}`,
+
+      c: `// C 示例
+#include <stdio.h>
+
+int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+
+int main() {
+    int num = 5;
+    printf("Factorial of %d is %d\\n", num, factorial(num));
+    return 0;
+}`,
+
+      csharp: `// C# 示例
+using System;
+using System.Collections.Generic;
+
+class Program {
+    static void Main() {
+        List<string> fruits = new List<string> 
+        { "Apple", "Banana", "Orange" };
+        
+        foreach (var fruit in fruits) {
+            Console.WriteLine(fruit);
+        }
+    }
+}`,
+
+      php: `<?php
+// PHP 示例
+function greet($name) {
+    return "Hello, " . $name . "!";
+}
+
+$names = ["Alice", "Bob", "Charlie"];
+
+foreach ($names as $name) {
+    echo greet($name) . "\\n";
+}
+?>`,
+
+      ruby: `# Ruby 示例
+def fibonacci(n)
+  return n if n <= 1
+  fibonacci(n - 1) + fibonacci(n - 2)
+end
+
+(0..10).each do |i|
+  puts "fibonacci(#{i}) = #{fibonacci(i)}"
+end`,
+
+      go: `// Go 示例
+package main
+
+import "fmt"
+
+func main() {
+    numbers := []int{1, 2, 3, 4, 5}
+    
+    for _, num := range numbers {
+        fmt.Printf("%d ", num)
+    }
+    fmt.Println()
+}`,
+
+      rust: `// Rust 示例
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5];
+    
+    for num in &numbers {
+        print!("{} ", num);
+    }
+    println!();
+    
+    let sum: i32 = numbers.iter().sum();
+    println!("Sum: {}", sum);
+}`,
+
+      swift: `// Swift 示例
+import Foundation
+
+func greet(name: String) -> String {
+    return "Hello, \\(name)!"
+}
+
+let names = ["Alice", "Bob", "Charlie"]
+
+for name in names {
+    print(greet(name: name))
+}`,
+
+      kotlin: `// Kotlin 示例
+fun main() {
+    val numbers = listOf(1, 2, 3, 4, 5)
+    
+    numbers.forEach { num ->
+        print("$num ")
+    }
+    println()
+    
+    val sum = numbers.sum()
+    println("Sum: $sum")
+}`,
+
+      html: `<!-- HTML 示例 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>示例页面</title>
+</head>
+<body>
+    <h1>欢迎使用代码分享工具</h1>
+    <p>这是一个 HTML 示例页面。</p>
+</body>
+</html>`,
+
+      css: `/* CSS 示例 */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.button {
+  background-color: #3b82f6;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: #2563eb;
+}`,
+
+      scss: `// SCSS 示例
+$primary-color: #3b82f6;
+$spacing: 20px;
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing;
+  
+  .button {
+    background-color: $primary-color;
+    color: white;
+    padding: $spacing / 2 $spacing;
+    border-radius: 8px;
+    
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+}`,
+
+      json: `{
+  "name": "example-project",
+  "version": "1.0.0",
+  "description": "一个示例项目",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "lodash": "^4.17.21"
+  }
+}`,
+
+      yaml: `# YAML 示例
+name: example-project
+version: 1.0.0
+description: 一个示例项目
+
+dependencies:
+  - express: ^4.18.0
+  - lodash: ^4.17.21
+
+scripts:
+  start: node index.js
+  test: jest`,
+
+      markdown: `# Markdown 示例
+
+## 标题
+
+这是一个 **Markdown** 示例文档。
+
+### 列表
+
+- 项目 1
+- 项目 2
+- 项目 3
+
+### 代码块
+
+\`\`\`javascript
+console.log("Hello, World!");
+\`\`\`
+
+### 链接
+
+[访问 GitHub](https://github.com)`,
+
+      sql: `-- SQL 示例
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO users (name, email) VALUES 
+    ('Alice', 'alice@example.com'),
+    ('Bob', 'bob@example.com');
+
+SELECT * FROM users WHERE name LIKE 'A%';`,
+
+      bash: `#!/bin/bash
+# Bash 示例
+
+echo "欢迎使用 Bash 脚本"
+
+# 遍历文件
+for file in *.txt; do
+    echo "处理文件: $file"
+done
+
+# 函数定义
+greet() {
+    echo "Hello, $1!"
+}
+
+greet "World"`,
+
+      auto: `// 欢迎使用代码分享工具
+// 在这里粘贴你的代码，或者拖拽文件到编辑器中
+
+function hello() {
+  console.log("Hello, World!");
+}
+
+hello();`,
 
       default: `// 欢迎使用代码分享工具
 // 在这里粘贴你的代码，或者拖拽文件到编辑器中

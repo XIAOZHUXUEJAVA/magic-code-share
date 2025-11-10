@@ -2,134 +2,181 @@
 export function detectLanguage(code: string): string | null {
   if (!code.trim()) return null;
 
+  // 定义模式及其权重 (weight: 权重，pattern: 正则表达式)
   const patterns = {
-    javascript: [
-      /\b(function|const|let|var|=>|console\.log)\b/,
-      /\b(import|export|require)\b/,
-      /\b(async|await|Promise)\b/,
-      /\$\{.*\}/,
-    ],
-    typescript: [
-      /\b(interface|type|enum|namespace)\b/,
-      /:\s*(string|number|boolean|any|void)/,
-      /\b(public|private|protected|readonly)\b/,
-      /<.*>/,
-    ],
-    python: [
-      /\b(def|class|import|from|if __name__ == "__main__")\b/,
-      /\b(print|len|range|str|int|float|list|dict)\b/,
-      /#.*$/m,
-      /:\s*$/m,
-    ],
+    // Java - 更具体的模式，避免与 TypeScript 混淆
     java: [
-      /\b(public class|private|protected|static)\b/,
-      /\b(System\.out\.println|String|int|void|main)\b/,
-      /\b(import java\.)/,
-      /\{[\s\S]*\}/,
+      { weight: 10, pattern: /\b(public|private|protected)\s+(static\s+)?(class|interface|enum)\s+\w+/ },
+      { weight: 8, pattern: /\b(import\s+java\.|package\s+[a-z.]+;)/ },
+      { weight: 8, pattern: /\bSystem\.(out|err)\.(println|print)/ },
+      { weight: 6, pattern: /\b(public|private|protected)\s+(static\s+)?\w+\s+\w+\s*\([^)]*\)\s*\{/ },
+      { weight: 5, pattern: /\b(extends|implements)\s+\w+/ },
+      { weight: 4, pattern: /\b(ArrayList|HashMap|List|Map|Set)<\w+>/ },
+      { weight: 3, pattern: /\bnew\s+\w+<[^>]+>\(/ },
+      { weight: 2, pattern: /\b(String|Integer|Boolean|Long|Double)\s+\w+\s*=/ },
+      { weight: 2, pattern: /@Override|@Deprecated|@SuppressWarnings/ },
     ],
+    // TypeScript - 更精确的模式
+    typescript: [
+      { weight: 10, pattern: /\b(interface|type)\s+\w+\s*=?\s*\{/ },
+      { weight: 8, pattern: /:\s*(string|number|boolean|any|void|unknown|never)\b/ },
+      { weight: 6, pattern: /\b(const|let|var)\s+\w+:\s*\w+/ },
+      { weight: 5, pattern: /\b(export|import)\s+(type|interface)\b/ },
+      { weight: 4, pattern: /<\w+>\s*\(/ },
+      { weight: 3, pattern: /\b(readonly|namespace|declare)\b/ },
+      { weight: 2, pattern: /\bas\s+(const|\w+)\b/ },
+    ],
+    // JavaScript
+    javascript: [
+      { weight: 6, pattern: /\b(const|let|var)\s+\w+\s*=/ },
+      { weight: 5, pattern: /\b(function|=>)/ },
+      { weight: 4, pattern: /\bconsole\.(log|error|warn)/ },
+      { weight: 3, pattern: /\b(async|await|Promise)\b/ },
+      { weight: 3, pattern: /\b(import|export|require)\b/ },
+      { weight: 2, pattern: /\$\{.*\}/ },
+    ],
+    // Python
+    python: [
+      { weight: 8, pattern: /\bdef\s+\w+\s*\([^)]*\)\s*:/ },
+      { weight: 6, pattern: /\b(import|from)\s+\w+/ },
+      { weight: 5, pattern: /\bif\s+__name__\s*==\s*["']__main__["']/ },
+      { weight: 4, pattern: /\b(print|len|range|str|int|float|list|dict|tuple)\s*\(/ },
+      { weight: 3, pattern: /#.*$/m },
+      { weight: 2, pattern: /:\s*$/m },
+    ],
+    // C++
     cpp: [
-      /\b(#include|using namespace|std::)\b/,
-      /\b(int main|cout|cin|endl)\b/,
-      /\b(class|struct|template)\b/,
-      /<iostream>/,
+      { weight: 10, pattern: /#include\s*<(iostream|vector|string|algorithm)>/ },
+      { weight: 8, pattern: /\busing\s+namespace\s+std;/ },
+      { weight: 6, pattern: /\bstd::(cout|cin|endl|vector|string)/ },
+      { weight: 4, pattern: /\b(template|typename)\s*</ },
+      { weight: 3, pattern: /\bint\s+main\s*\(/ },
     ],
+    // C
     c: [
-      /\b(#include|printf|scanf|malloc|free)\b/,
-      /\b(int main|void|char|int|float|double)\b/,
-      /<stdio\.h>/,
-      /\*.*\*/,
+      { weight: 10, pattern: /#include\s*<(stdio|stdlib|string)\.h>/ },
+      { weight: 6, pattern: /\b(printf|scanf|malloc|free|sizeof)\s*\(/ },
+      { weight: 4, pattern: /\bint\s+main\s*\(/ },
+      { weight: 2, pattern: /\*.*\*/ },
     ],
+    // C#
     csharp: [
-      /\b(using System|namespace|public class)\b/,
-      /\b(Console\.WriteLine|string|int|void|Main)\b/,
-      /\b(public|private|protected|static)\b/,
-      /\[.*\]/,
+      { weight: 10, pattern: /\busing\s+System/ },
+      { weight: 8, pattern: /\bConsole\.(WriteLine|ReadLine)/ },
+      { weight: 6, pattern: /\bnamespace\s+\w+/ },
+      { weight: 4, pattern: /\[\w+\]/ },
+      { weight: 3, pattern: /\b(public|private|protected)\s+(static\s+)?void\s+Main/ },
     ],
+    // PHP
     php: [
-      /<\?php/,
-      /\$[a-zA-Z_]/,
-      /\b(echo|print|function|class|namespace)\b/,
-      /->/,
+      { weight: 10, pattern: /<\?php/ },
+      { weight: 6, pattern: /\$[a-zA-Z_]\w*/ },
+      { weight: 4, pattern: /\b(echo|print|function|class)\b/ },
+      { weight: 3, pattern: /->\w+/ },
     ],
+    // Ruby
     ruby: [
-      /\b(def|class|module|end|puts|require)\b/,
-      /@[a-zA-Z_]/,
-      /\b(attr_accessor|attr_reader|attr_writer)\b/,
-      /\|.*\|/,
+      { weight: 8, pattern: /\b(def|end)\b/ },
+      { weight: 6, pattern: /@[a-zA-Z_]\w*/ },
+      { weight: 4, pattern: /\b(puts|require|module|attr_accessor)\b/ },
+      { weight: 2, pattern: /\|\w+\|/ },
     ],
+    // Go
     go: [
-      /\b(package|import|func|var|const)\b/,
-      /\b(fmt\.Println|make|chan|go|defer)\b/,
-      /:=/,
-      /\binterface\{\}/,
+      { weight: 10, pattern: /\bpackage\s+\w+/ },
+      { weight: 8, pattern: /\bfunc\s+\w+\s*\([^)]*\)/ },
+      { weight: 6, pattern: /\bfmt\.(Println|Printf)/ },
+      { weight: 4, pattern: /:=/ },
+      { weight: 3, pattern: /\b(make|chan|go|defer)\b/ },
     ],
+    // Rust
     rust: [
-      /\b(fn|let|mut|struct|enum|impl|trait)\b/,
-      /\b(println!|vec!|match|Some|None|Ok|Err)\b/,
-      /\b(pub|use|mod|crate)\b/,
-      /->/,
+      { weight: 10, pattern: /\bfn\s+\w+\s*\([^)]*\)/ },
+      { weight: 8, pattern: /\b(let\s+mut|impl|trait)\b/ },
+      { weight: 6, pattern: /\b(println!|vec!|macro_rules!)/ },
+      { weight: 4, pattern: /\b(Some|None|Ok|Err)\b/ },
+      { weight: 3, pattern: /\b(pub|use|mod|crate)\b/ },
     ],
+    // Swift
     swift: [
-      /\b(func|var|let|class|struct|enum|protocol)\b/,
-      /\b(print|String|Int|Bool|Array|Dictionary)\b/,
-      /\b(import|override|public|private|internal)\b/,
-      /->/,
+      { weight: 8, pattern: /\bfunc\s+\w+\s*\([^)]*\)\s*->/ },
+      { weight: 6, pattern: /\b(var|let)\s+\w+:\s*\w+/ },
+      { weight: 4, pattern: /\b(import\s+\w+|override|protocol)\b/ },
+      { weight: 3, pattern: /\bprint\s*\(/ },
     ],
+    // Kotlin
     kotlin: [
-      /\b(fun|val|var|class|object|interface)\b/,
-      /\b(println|String|Int|Boolean|List|Map)\b/,
-      /\b(import|package|override|open|abstract)\b/,
-      /->/,
+      { weight: 10, pattern: /\bfun\s+\w+\s*\(/ },
+      { weight: 8, pattern: /\b(val|var)\s+\w+:\s*\w+/ },
+      { weight: 6, pattern: /\b(object|companion\s+object)\b/ },
+      { weight: 4, pattern: /\bprintln\s*\(/ },
+      { weight: 3, pattern: /\b(open|abstract|sealed)\s+class\b/ },
     ],
+    // HTML
     html: [
-      /<\/?[a-zA-Z][^>]*>/,
-      /<!DOCTYPE html>/i,
-      /<(div|span|p|h[1-6]|a|img|ul|ol|li)/i,
-      /class=|id=/,
+      { weight: 10, pattern: /<!DOCTYPE html>/i },
+      { weight: 8, pattern: /<(html|head|body|div|span|p|h[1-6])/ },
+      { weight: 4, pattern: /<\/?[a-zA-Z][^>]*>/ },
+      { weight: 2, pattern: /\b(class|id)=/ },
     ],
+    // CSS
     css: [
-      /\{[\s\S]*\}/,
-      /[.#][a-zA-Z-_][^{]*\{/,
-      /\b(color|background|margin|padding|font-size|display)\b/,
-      /@media|@import|@keyframes/,
+      { weight: 8, pattern: /[.#][a-zA-Z-_][^{]*\{[^}]*\}/ },
+      { weight: 6, pattern: /\b(color|background|margin|padding|font-size|display)\s*:/ },
+      { weight: 4, pattern: /@(media|import|keyframes)/ },
     ],
-    scss: [/\$[a-zA-Z-_]+:/, /@mixin|@include|@extend/, /&[.:#]/, /\#{.*\}/],
+    // SCSS
+    scss: [
+      { weight: 10, pattern: /\$[a-zA-Z-_]+:\s*[^;]+;/ },
+      { weight: 8, pattern: /@(mixin|include|extend)/ },
+      { weight: 4, pattern: /&[.:#]/ },
+      { weight: 2, pattern: /\#\{.*\}/ },
+    ],
+    // JSON
     json: [
-      /^\s*\{[\s\S]*\}\s*$/,
-      /^\s*\[[\s\S]*\]\s*$/,
-      /"[^"]*":\s*(".*"|[0-9]+|true|false|null)/,
-      /^\s*"[^"]*":\s*/m,
+      { weight: 10, pattern: /^\s*\{[\s\S]*\}\s*$/ },
+      { weight: 8, pattern: /"[^"]*":\s*("[^"]*"|[0-9]+|true|false|null)/ },
+      { weight: 4, pattern: /^\s*\[[\s\S]*\]\s*$/ },
     ],
+    // YAML
     yaml: [
-      /^[a-zA-Z_-]+:\s*$/m,
-      /^[a-zA-Z_-]+:\s+[^|>]/m,
-      /^\s*-\s+/m,
-      /^---/m,
+      { weight: 8, pattern: /^[a-zA-Z_-]+:\s*[^|>]/m },
+      { weight: 6, pattern: /^\s*-\s+\w+/m },
+      { weight: 4, pattern: /^---/m },
     ],
-    markdown: [/^#{1,6}\s+/m, /\*\*.*\*\*|\*.*\*/, /\[.*\]\(.*\)/, /^```/m],
+    // Markdown
+    markdown: [
+      { weight: 8, pattern: /^#{1,6}\s+/m },
+      { weight: 6, pattern: /\[.*\]\(.*\)/ },
+      { weight: 4, pattern: /\*\*.*\*\*|\*.*\*/ },
+      { weight: 3, pattern: /^```/m },
+    ],
+    // SQL
     sql: [
-      /\b(SELECT|FROM|WHERE|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP)\b/i,
-      /\b(TABLE|DATABASE|INDEX|VIEW|PROCEDURE|FUNCTION)\b/i,
-      /\b(JOIN|INNER|LEFT|RIGHT|OUTER|ON|GROUP BY|ORDER BY)\b/i,
-      /;$/m,
+      { weight: 10, pattern: /\b(SELECT|FROM|WHERE|INSERT|UPDATE|DELETE)\b/i },
+      { weight: 8, pattern: /\b(CREATE|ALTER|DROP)\s+(TABLE|DATABASE|INDEX)\b/i },
+      { weight: 6, pattern: /\b(JOIN|INNER|LEFT|RIGHT|OUTER)\s+JOIN\b/i },
+      { weight: 4, pattern: /;$/m },
     ],
+    // Bash
     bash: [
-      /^#!/,
-      /\b(echo|cd|ls|mkdir|rm|cp|mv|grep|awk|sed)\b/,
-      /\$[a-zA-Z_][a-zA-Z0-9_]*/,
-      /\|\s*\w+/,
+      { weight: 10, pattern: /^#!\/bin\/(bash|sh)/ },
+      { weight: 6, pattern: /\b(echo|cd|ls|mkdir|rm|cp|mv|grep|awk|sed)\b/ },
+      { weight: 4, pattern: /\$[a-zA-Z_][a-zA-Z0-9_]*/ },
+      { weight: 2, pattern: /\|\s*\w+/ },
     ],
   };
 
-  // 计算每种语言的匹配分数
+  // 计算每种语言的匹配分数（使用加权评分）
   const scores: Record<string, number> = {};
 
   for (const [lang, langPatterns] of Object.entries(patterns)) {
     let score = 0;
-    for (const pattern of langPatterns) {
+    for (const { weight, pattern } of langPatterns) {
       const matches = code.match(pattern);
       if (matches) {
-        score += matches.length;
+        // 使用权重和匹配次数计算分数
+        score += weight * matches.length;
       }
     }
     scores[lang] = score;
@@ -139,11 +186,49 @@ export function detectLanguage(code: string): string | null {
   const maxScore = Math.max(...Object.values(scores));
   if (maxScore === 0) return null;
 
-  const detectedLang = Object.keys(scores).find(
+  // 获取所有最高分的语言
+  const topLanguages = Object.keys(scores).filter(
     (lang) => scores[lang] === maxScore
   );
 
-  return detectedLang || null;
+  // 如果只有一个最高分语言，直接返回
+  if (topLanguages.length === 1) {
+    return topLanguages[0];
+  }
+
+  // 处理冲突：优先级规则
+  const priorityOrder = [
+    'java',      // Java 优先于 TypeScript/C#
+    'typescript', // TypeScript 优先于 JavaScript
+    'cpp',       // C++ 优先于 C
+    'python',
+    'csharp',
+    'javascript',
+    'c',
+    'go',
+    'rust',
+    'kotlin',
+    'swift',
+    'php',
+    'ruby',
+    'bash',
+    'sql',
+    'html',
+    'css',
+    'scss',
+    'json',
+    'yaml',
+    'markdown',
+  ];
+
+  // 按优先级返回第一个匹配的语言
+  for (const lang of priorityOrder) {
+    if (topLanguages.includes(lang)) {
+      return lang;
+    }
+  }
+
+  return topLanguages[0] || null;
 }
 
 // 根据文件扩展名检测语言
